@@ -1,6 +1,7 @@
 package org.forwarder.backend.impls.dl4j;
 
 import org.forwarder.Session;
+import org.forwarder.executor.Executor;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
@@ -27,8 +28,8 @@ public class DL4JSession extends Session<INDArray> {
 	
 	private SameDiff sameDiff;
 
-	public DL4JSession(DL4JBackend backend) {
-		super(backend);
+	public DL4JSession(Executor<INDArray> executor, DL4JBackend backend) {
+		super(executor, backend);
 
 		this.sameDiff = this.createSameDiff();
 	}

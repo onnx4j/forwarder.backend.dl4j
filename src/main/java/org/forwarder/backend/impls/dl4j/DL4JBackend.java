@@ -3,12 +3,13 @@ package org.forwarder.backend.impls.dl4j;
 import java.util.Arrays;
 
 import org.forwarder.Backend;
-import org.forwarder.Model;
 import org.forwarder.Session;
+import org.forwarder.executor.Executor;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Model;
 import org.onnx4j.tensor.Shape;
 
 public class DL4JBackend extends Backend<INDArray> {
@@ -19,8 +20,8 @@ public class DL4JBackend extends Backend<INDArray> {
 		super();
 	}
 
-	public DL4JBackend(Model model) {
-		super(model);
+	public DL4JBackend(Model model, Executor<INDArray> executor) {
+		super(model, executor);
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class DL4JBackend extends Backend<INDArray> {
 
 	@Override
 	public Session<INDArray> newSession() {
-		return new DL4JSession(this);
+		return new DL4JSession(super.getExecutor(), this);
 	}
 
 }
