@@ -14,8 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-public abstract class DL4JOperator {
+import org.forwarder.backend.impls.dl4j.DL4JSession;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.Tensor;
+import org.onnx4j.opsets.aiOnnx.v1.ops.ConstantV1;
+
+public class DL4JConstantV1 extends DL4JAiOnnxOperator implements ConstantV1<INDArray> {
+
+	@Override
+	public INDArray constant(Tensor x0) {
+		return DL4JSession.getSession().getBackend().toBackendTensor(x0);
+	}
 
 }

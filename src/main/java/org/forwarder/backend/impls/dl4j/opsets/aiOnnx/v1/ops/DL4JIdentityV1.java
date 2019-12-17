@@ -14,8 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-public abstract class DL4JOperator {
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.linalg.activations.impl.ActivationIdentity;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v1.ops.IdentityV1;
+
+public class DL4JIdentityV1 extends DL4JAiOnnxOperator implements IdentityV1<INDArray> {
+	
+	private ActivationIdentity identity = new ActivationIdentity();
+
+	@Override
+	public INDArray identity(INDArray x0) {
+		// TODO Auto-generated method stub
+		return identity.getActivation(x0, false);
+	}
 
 }

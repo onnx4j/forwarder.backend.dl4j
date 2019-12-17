@@ -14,8 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnxMl;
 
-public abstract class DL4JOperator {
+import org.onnx4j.opsets.aiOnnxMl.AiOnnxMlOperatorSet;
+
+public abstract class DL4JAiOnnxMlOperatorSet extends AiOnnxMlOperatorSet {
+
+	public DL4JAiOnnxMlOperatorSet(int irVersion, String irVersionPrerelease, String irBuildMetadata, long opsetVersion,
+			String docString) {
+		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
+	}
 
 }

@@ -14,8 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v2;
 
-public abstract class DL4JOperator {
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.DL4JAiOnnxOperatorSetV1;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v2.AiOnnxOperatorSetSpecV2;
+
+public class DL4JAiOnnxOperatorSetV2 extends DL4JAiOnnxOperatorSetV1 implements AiOnnxOperatorSetSpecV2<INDArray> {
+
+	//@Override
+	//public PadV2<INDArray> getPadV2() { return new DL4JPadV2(); }
+
+	public DL4JAiOnnxOperatorSetV2() {
+		this(1, "", "", 2L, "ONNX OPSET-V2 USING DL4J BACKEND");
+	}
+
+	public DL4JAiOnnxOperatorSetV2(int irVersion, String irVersionPrerelease, String irBuildMetadata,
+			long opsetVersion, String docString) {
+		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
+	}
 
 }

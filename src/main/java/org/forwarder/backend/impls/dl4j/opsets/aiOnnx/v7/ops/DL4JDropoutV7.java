@@ -14,8 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops;
 
-public abstract class DL4JOperator {
+import java.util.List;
+
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JDropoutV6;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v7.ops.DropoutV7;
+
+public class DL4JDropoutV7 extends DL4JDropoutV6 implements DropoutV7<INDArray> {
+
+	@Override
+	public List<INDArray> dropout(INDArray data, Float ratio) {
+		return super.dropout(data, true, ratio);
+	}
 
 }

@@ -14,19 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9;
 
-import org.forwarder.backend.impls.dl4j.DL4JBackend;
-import org.forwarder.opset.annotations.Opset;
-import org.onnx4j.opsets.OperatorSet;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8.DL4JAiOnnxOperatorSetV8;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9.ops.DL4JCastV9;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v9.AiOnnxOperatorSetSpecV9;
+import org.onnx4j.opsets.aiOnnx.v9.ops.CastV9;
 
-@Opset(backendName = DL4JBackend.BACKEND_NAME)
-public abstract class DL4JOperatorSet extends OperatorSet {
+public class DL4JAiOnnxOperatorSetV9 extends DL4JAiOnnxOperatorSetV8 implements AiOnnxOperatorSetSpecV9<INDArray> {
 
-	public DL4JOperatorSet(int irVersion, String irVersionPrerelease, String irBuildMetadata, String domain,
-			long opsetVersion, String docString) {
-		super(irVersion, irVersionPrerelease, irBuildMetadata, domain, opsetVersion, docString);
-		// TODO Auto-generated constructor stub
+	public DL4JAiOnnxOperatorSetV9() {
+		super(1, "", "", 9L, "ONNX OPSET-V9 USING DL4J BACKEND");
 	}
+
+	public DL4JAiOnnxOperatorSetV9(int irVersion, String irVersionPrerelease, String irBuildMetadata,
+			long opsetVersion, String docString) {
+		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
+	}
+
+	@Override
+	public CastV9<INDArray> getCastV9() { return new DL4JCastV9(); }
 
 }

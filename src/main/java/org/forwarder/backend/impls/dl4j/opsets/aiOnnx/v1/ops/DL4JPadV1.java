@@ -14,8 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-public abstract class DL4JOperator {
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
+
+public class DL4JPadV1 extends DL4JAiOnnxOperator implements PadV1<INDArray> {
+
+	@Override
+	public INDArray pad(INDArray x0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

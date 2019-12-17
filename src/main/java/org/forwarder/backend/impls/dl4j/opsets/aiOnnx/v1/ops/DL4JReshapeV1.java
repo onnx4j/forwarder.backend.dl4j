@@ -14,8 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-public abstract class DL4JOperator {
+import java.util.List;
+
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.shade.guava.primitives.Longs;
+import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
+
+public class DL4JReshapeV1 extends DL4JAiOnnxOperator implements ReshapeV1<INDArray> {
+
+	@Override
+	public INDArray reshape(INDArray data, List<Long> shape, List<Long> consumedInputs) {
+		return data.reshape(Longs.toArray(shape));
+	}
 
 }

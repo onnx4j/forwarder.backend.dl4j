@@ -14,8 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-public abstract class DL4JOperator {
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.opsets.aiOnnx.v1.ops.ArgMaxV1;
+
+public class DL4JArgMaxV1 extends DL4JAiOnnxOperator implements ArgMaxV1<INDArray> {
+
+	@Override
+	public INDArray argmax(INDArray x0, int axis, int keepdims) {
+		return x0.argMax(axis);
+	}
 
 }
