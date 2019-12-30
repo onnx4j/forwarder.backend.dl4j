@@ -20,11 +20,13 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.DL4JAiOnnxOperatorSetV6
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops.DL4JAveragePoolV7;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops.DL4JBatchNormalizationV7;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops.DL4JDropoutV7;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops.DL4JSubV7;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v7.AiOnnxOperatorSetSpecV7;
 import org.onnx4j.opsets.aiOnnx.v7.ops.AveragePoolV7;
 import org.onnx4j.opsets.aiOnnx.v7.ops.BatchNormalizationV7;
 import org.onnx4j.opsets.aiOnnx.v7.ops.DropoutV7;
+import org.onnx4j.opsets.aiOnnx.v7.ops.SubV7;
 
 public class DL4JAiOnnxOperatorSetV7 extends DL4JAiOnnxOperatorSetV6 implements AiOnnxOperatorSetSpecV7<INDArray> {
 
@@ -39,6 +41,9 @@ public class DL4JAiOnnxOperatorSetV7 extends DL4JAiOnnxOperatorSetV6 implements 
 
 	@Override
 	public AveragePoolV7<INDArray> getAveragePoolV7() { return new DL4JAveragePoolV7(); }
+
+	@Override
+	public SubV7<INDArray> getSubV7() { return new DL4JSubV7(); }
 
 	public DL4JAiOnnxOperatorSetV7() {
 		super(1, "", "", 7L, "ONNX OPSET-V7 USING DL4J BACKEND");

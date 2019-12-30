@@ -28,6 +28,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JConstantV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JConvV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JDivV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JDropoutV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JGatherV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JIdentityV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JImageScalerV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JLeakyReluV1;
@@ -37,6 +38,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMulV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JPadV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v1.AiOnnxOperatorSetSpecV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.AbsV1;
@@ -50,6 +52,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.ConstantV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ConvV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.DivV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.DropoutV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.GatherV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.IdentityV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ImageScalerV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.LeakyReluV1;
@@ -59,6 +62,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.MulV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
 
 public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOperatorSetSpecV1<INDArray> {
 
@@ -121,6 +125,12 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 
 	@Override
 	public CastV1<INDArray> getCastV1() { return new DL4JCastV1(); }
+	
+	@Override
+	public GatherV1<INDArray> getGatherV1() { return null; }
+	
+	@Override
+	public SubV1<INDArray> getSubV1() { return new DL4JSubV1(); }
 
 
 	public DL4JAiOnnxOperatorSetV1() {
