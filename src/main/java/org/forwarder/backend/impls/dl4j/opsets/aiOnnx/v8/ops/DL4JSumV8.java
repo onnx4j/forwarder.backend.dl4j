@@ -14,26 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8.ops;
 
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.DL4JAiOnnxOperatorSetV7;
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8.ops.DL4JSumV8;
+import java.util.List;
+
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSumV6;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v8.AiOnnxOperatorSetSpecV8;
 import org.onnx4j.opsets.aiOnnx.v8.ops.SumV8;
 
-public class DL4JAiOnnxOperatorSetV8 extends DL4JAiOnnxOperatorSetV7 implements AiOnnxOperatorSetSpecV8<INDArray> {
+public class DL4JSumV8 extends DL4JSumV6 implements SumV8<INDArray> {
 
 	@Override
-	public SumV8<INDArray> getSumV8() { return new DL4JSumV8(); }
-
-	public DL4JAiOnnxOperatorSetV8() {
-		super(1, "", "", 8L, "ONNX OPSET-V8 USING DL4J BACKEND");
+	public INDArray sum(List<INDArray> dataList) {
+		return super.sum(dataList);
 	}
-
-	public DL4JAiOnnxOperatorSetV8(int irVersion, String irVersionPrerelease, String irBuildMetadata,
-			long opsetVersion, String docString) {
-		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
-	}
-
+	
 }

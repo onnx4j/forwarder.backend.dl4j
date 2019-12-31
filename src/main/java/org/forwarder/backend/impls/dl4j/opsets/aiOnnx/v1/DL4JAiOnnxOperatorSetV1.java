@@ -39,6 +39,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JPadV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v1.AiOnnxOperatorSetSpecV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.AbsV1;
@@ -63,6 +64,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
 
 public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOperatorSetSpecV1<INDArray> {
 
@@ -126,11 +128,15 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 	@Override
 	public CastV1<INDArray> getCastV1() { return new DL4JCastV1(); }
 	
+	// TODO: 
 	@Override
 	public GatherV1<INDArray> getGatherV1() { return null; }
 	
 	@Override
 	public SubV1<INDArray> getSubV1() { return new DL4JSubV1(); }
+	
+	@Override
+	public SumV1<INDArray> getSumV1() { return new DL4JSumV1(); }
 
 
 	public DL4JAiOnnxOperatorSetV1() {
