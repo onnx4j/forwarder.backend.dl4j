@@ -20,6 +20,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v5.DL4JAiOnnxOperatorSetV5
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JCastV6;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JDropoutV6;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JMulV6;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSigmoidV6;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSubV6;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSumV6;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -27,6 +28,7 @@ import org.onnx4j.opsets.aiOnnx.v6.AiOnnxOperatorSetSpecV6;
 import org.onnx4j.opsets.aiOnnx.v6.ops.CastV6;
 import org.onnx4j.opsets.aiOnnx.v6.ops.DropoutV6;
 import org.onnx4j.opsets.aiOnnx.v6.ops.MulV6;
+import org.onnx4j.opsets.aiOnnx.v6.ops.SigmoidV6;
 import org.onnx4j.opsets.aiOnnx.v6.ops.SubV6;
 import org.onnx4j.opsets.aiOnnx.v6.ops.SumV6;
 
@@ -46,6 +48,9 @@ public class DL4JAiOnnxOperatorSetV6 extends DL4JAiOnnxOperatorSetV5 implements 
 
 	@Override
 	public SumV6<INDArray> getSumV6() { return new DL4JSumV6(); }
+	
+	@Override
+	public SigmoidV6<INDArray> getSigmoidV6() { return new DL4JSigmoidV6(); }
 
 	public DL4JAiOnnxOperatorSetV6() {
 		this(1, "", "", 6L, "ONNX OPSET-V6 USING DL4J BACKEND");

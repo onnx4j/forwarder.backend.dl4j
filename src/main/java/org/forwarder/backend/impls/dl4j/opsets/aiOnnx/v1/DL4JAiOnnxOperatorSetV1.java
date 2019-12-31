@@ -28,7 +28,6 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JConstantV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JConvV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JDivV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JDropoutV1;
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JGatherV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JIdentityV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JImageScalerV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JLeakyReluV1;
@@ -38,6 +37,8 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMulV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JPadV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSigmoidV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -63,6 +64,8 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.MulV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
 
@@ -137,6 +140,12 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 	
 	@Override
 	public SumV1<INDArray> getSumV1() { return new DL4JSumV1(); }
+	
+	@Override
+	public SigmoidV1<INDArray> getSigmoidV1() { return new DL4JSigmoidV1(); }
+	
+	@Override
+	public SoftmaxV1<INDArray> getSoftmaxV1() { return new DL4JSoftmaxV1(); }
 
 
 	public DL4JAiOnnxOperatorSetV1() {

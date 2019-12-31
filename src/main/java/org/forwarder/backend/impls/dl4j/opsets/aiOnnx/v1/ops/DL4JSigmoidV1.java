@@ -16,21 +16,25 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
+import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
 
-public class DL4JSumV1 extends DL4JAiOnnxOperator implements SumV1<INDArray> {
+public class DL4JSigmoidV1 extends DL4JAiOnnxOperator implements SigmoidV1<INDArray> {
 
 	@Override
-	public INDArray sum(List<INDArray> dataList, List<Long> consumedInputs) {
-		INDArray result = dataList.get(0);
-		for (int n = 1; n < dataList.size(); n++) {
-			result = result.add(dataList.get(n));
-		}
-		return result;
+	public INDArray sigmoid(INDArray x, List<Long> consumedInputs) {
+		SameDiff sameDiff = DL4JSession.get();
+		SDVariable sigmoid = sameDiff.nn.sigmoid(sameDiff.constant(x));
+		return sameDiff.outputSingle(
+				Collections.<String, INDArray>emptyMap(), 
+				sigmoid.getVarName());
 	}
 	
 }
