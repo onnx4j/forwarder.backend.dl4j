@@ -16,11 +16,8 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops;
 
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSubV6;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Broadcast;
-import org.onnx4j.opsets.aiOnnx.v6.ops.SubV6;
 import org.onnx4j.opsets.aiOnnx.v7.ops.SubV7;
 
 public class DL4JSubV7 extends DL4JSubV6 implements SubV7<INDArray> {

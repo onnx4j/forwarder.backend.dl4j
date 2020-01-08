@@ -18,14 +18,19 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v10.DL4JAiOnnxOperatorSetV10;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JSoftmaxV11;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JSqueezeV11;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v11.AiOnnxOperatorSetSpecV11;
 import org.onnx4j.opsets.aiOnnx.v11.ops.SoftmaxV11;
+import org.onnx4j.opsets.aiOnnx.v11.ops.SqueezeV11;
 
 public class DL4JAiOnnxOperatorSetV11 extends DL4JAiOnnxOperatorSetV10 implements AiOnnxOperatorSetSpecV11<INDArray> {
 
 	@Override
 	public SoftmaxV11<INDArray> getSoftmaxV11() { return new DL4JSoftmaxV11(); }
+
+	@Override
+	public SqueezeV11<INDArray> getSqueezeV11() { return new DL4JSqueezeV11(); }
 
 	public DL4JAiOnnxOperatorSetV11() {
 		super(1, "", "", 11L, "ONNX OPSET-V11 USING DL4J BACKEND");

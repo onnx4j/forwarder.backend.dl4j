@@ -16,6 +16,7 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1;
 
+import org.forwarder.backend.impls.dl4j.DL4JBackend;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperatorSet;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JAbsV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JAddV1;
@@ -39,8 +40,10 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSigmoidV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSqueezeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
+import org.forwarder.opset.annotations.Opset;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v1.AiOnnxOperatorSetSpecV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.AbsV1;
@@ -66,9 +69,11 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.SqueezeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
 
+@Opset(backendName = DL4JBackend.BACKEND_NAME)
 public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOperatorSetSpecV1<INDArray> {
 
 	@Override
@@ -147,6 +152,8 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 	@Override
 	public SoftmaxV1<INDArray> getSoftmaxV1() { return new DL4JSoftmaxV1(); }
 
+	@Override
+	public SqueezeV1<INDArray> getSqueezeV1() { return new DL4JSqueezeV1(); }
 
 	public DL4JAiOnnxOperatorSetV1() {
 		this(1, "", "", 1L, "ONNX OPSET-V1 USING DL4J BACKEND");
