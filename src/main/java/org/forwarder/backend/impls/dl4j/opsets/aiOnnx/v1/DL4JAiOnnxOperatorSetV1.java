@@ -36,6 +36,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMatMulV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMaxPoolV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMulV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JPadV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReduceMaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSigmoidV1;
@@ -43,6 +44,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSqueezeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JUnsqueezeV1;
 import org.forwarder.opset.annotations.Opset;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.opsets.aiOnnx.v1.AiOnnxOperatorSetSpecV1;
@@ -65,6 +67,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.MatMulV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.MaxPoolV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.MulV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.ReduceMaxV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
@@ -72,6 +75,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SqueezeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.UnsqueezeV1;
 
 @Opset(backendName = DL4JBackend.BACKEND_NAME)
 public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOperatorSetSpecV1<INDArray> {
@@ -154,6 +158,12 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 
 	@Override
 	public SqueezeV1<INDArray> getSqueezeV1() { return new DL4JSqueezeV1(); }
+
+	@Override
+	public UnsqueezeV1<INDArray> getUnsqueezeV1() { return new DL4JUnsqueezeV1(); }
+
+	@Override
+	public ReduceMaxV1<INDArray> getReduceMaxV1() { return new DL4JReduceMaxV1(); }
 
 	public DL4JAiOnnxOperatorSetV1() {
 		this(1, "", "", 1L, "ONNX OPSET-V1 USING DL4J BACKEND");

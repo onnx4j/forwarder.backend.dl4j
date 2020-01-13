@@ -17,6 +17,7 @@
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.DL4JSession;
@@ -24,11 +25,11 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.impl.shape.Squeeze;
-import org.nd4j.shade.guava.primitives.Ints;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SqueezeV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.UnsqueezeV1;
 
-public class DL4JSqueezeV1 extends DL4JAiOnnxOperator implements SqueezeV1<INDArray> {
+import com.google.common.primitives.Ints;
+
+public class DL4JUnsqueezeV1 extends DL4JAiOnnxOperator implements UnsqueezeV1<INDArray> {
 
 	@Override
 	public OperatorStatus getStatus() {
@@ -36,48 +37,29 @@ public class DL4JSqueezeV1 extends DL4JAiOnnxOperator implements SqueezeV1<INDAr
 	}
 
 	@Override
-	public INDArray squeeze(INDArray data, List<Long> axes) {
-		return this.squeeze(data, Ints.toArray(axes));
+	public INDArray unsqueeze(INDArray data, List<Long> axes) {
+		return this.unsqueeze(data, Ints.toArray(axes));
 	}
 	
-	protected INDArray squeeze(INDArray data, int[] axes) {
-		long[] shape = data.shape();
-		if (axes.length == 0) {
-			axes = new int[shape.length];
-
-			//
-			// If axes is not provided, all the single dimensions will be
-			// removed
-			// from the shape.
-			//
-			for (int n = 0; n < shape.length; n++) {
-				if (shape[n] == 1) {
-					axes[n] = n;
-				}
-			}
-		} else {
-			//
-			// If an axis is selected with shape entry not equal to one, an
-			// error is raised.
-			//
-			for (int axis : axes) {
-				if (shape[axis] != 1) {
-					throw new IllegalArgumentException(String.format(
-							"An axis(%s) is selected with shape entry expects to equal to 1, but is equal to %s", axis,
-							shape[axis]));
-				}
-			}
-		}
-
+	protected INDArray unsqueeze(INDArray data, int[] axes) {
 		//
 		// axes集合必须符合从小到大（升序）排列
 		//
 		Arrays.sort(axes);
-		
+
+		int maxAxis = data.rank() + axes.length;
+
 		SameDiff sameDiff = DL4JSession.get();
-		Squeeze squeeze = new Squeeze(sameDiff, sameDiff.constant(data), axes);
-		SDVariable out = squeeze.outputVariable();
-		return out.eval();
+		SDVariable intermediate = sameDiff.constant(data);
+		for (int axis : axes) {
+			if (axis >= maxAxis)
+				throw new IllegalArgumentException(
+						String.format("The max axis value is %s, but the value of passed is %s.", maxAxis, axis));
+
+			intermediate = sameDiff.expandDims(intermediate, axis);
+		}
+
+		return sameDiff.outputSingle(Collections.<String, INDArray>emptyMap(), intermediate.getVarName());
 	}
 
 }

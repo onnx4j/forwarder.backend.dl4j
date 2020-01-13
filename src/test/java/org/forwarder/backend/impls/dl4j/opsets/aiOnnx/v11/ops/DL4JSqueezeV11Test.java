@@ -16,6 +16,7 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSqueezeV1Test;
@@ -32,12 +33,12 @@ public class DL4JSqueezeV11Test extends DL4JSqueezeV1Test {
 		this.testSqueeze(
 				Nd4j.create(2, 1, 4), 
 				Nd4j.create(2, 1, 4, 1), 
-				Longs.asList(-1)
+				Collections.unmodifiableList(Longs.asList(-1))
 			);
 		this.testSqueeze(
 				Nd4j.create(2, 4), 
 				Nd4j.create(2, 1, 4, 1), 
-				Longs.asList(-1, -3)
+				Collections.unmodifiableList(Longs.asList(-1, -3))
 			);
 	}
 
@@ -47,7 +48,7 @@ public class DL4JSqueezeV11Test extends DL4JSqueezeV1Test {
 		this.testSqueeze(
 				null, 
 				Nd4j.create(2, 1, 4, 1), 
-				Longs.asList(-1, -2)
+				Collections.unmodifiableList(Longs.asList(-1, -2))
 			);
 	}
 

@@ -29,69 +29,79 @@ import org.junit.rules.ExpectedException;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
 
-public class DL4JSqueezeV1Test extends DL4JTestCase {
+public class DL4JRedeceMaxV1Test extends DL4JTestCase {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void testWithAxes() {
-		this.testSqueeze(
-				Nd4j.create(2, 4, 1), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(1))
-			);
-		this.testSqueeze(
-				Nd4j.create(2, 4), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(1, 3))
-			);
+	public void testWithKeepdims() {
+		this.testReduceMax(
+				Nd4j.create(new float[][] {
+					{ 4.5f, 5.7f }
+				}), 
+				Nd4j.create(new float[][] {
+					{ 1.0f, 1.2f },
+					{ 2.3f, 3.4f },
+					{ 4.5f, 5.7f }
+				}), 
+				Collections.unmodifiableList(Longs.asList(0)),
+				1L);
+		this.testReduceMax(
+				Nd4j.create(new float[][] {
+					{ 1.2f },
+					{ 3.4f },
+					{ 5.7f }
+				}), 
+				Nd4j.create(new float[][] {
+					{ 1.0f, 1.2f },
+					{ 2.3f, 3.4f },
+					{ 4.5f, 5.7f }
+				}), 
+				Collections.unmodifiableList(Longs.asList(1)),
+				1L);
 	}
 
 	@Test
-	public void testWithShapeEntryNotEqualToOne() {
-		thrown.expect(IllegalArgumentException.class);
-		this.testSqueeze(
-				null, 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(0))
-			);
+	public void testWithoutKeepdims() {
+		this.testReduceMax(
+				Nd4j.create(new float[] {
+					4.5f, 5.7f
+				}), 
+				Nd4j.create(new float[][] {
+					{ 1.0f, 1.2f },
+					{ 2.3f, 3.4f },
+					{ 4.5f, 5.7f }
+				}), 
+				Collections.unmodifiableList(Longs.asList(0)),
+				0L);
+		this.testReduceMax(
+				Nd4j.create(new float[] {
+					1.2f, 3.4f, 5.7f
+				}), 
+				Nd4j.create(new float[][] {
+					{ 1.0f, 1.2f },
+					{ 2.3f, 3.4f },
+					{ 4.5f, 5.7f }
+				}), 
+				Collections.unmodifiableList(Longs.asList(1)),
+				0L);
 	}
 
-	@Test
-	public void testWithEmptyAxes() {
-		this.testSqueeze(
-				Nd4j.create(2, 4), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Lists.newLinkedList())
-			);
-		this.testSqueeze(
-				Nd4j.create(3, 4), 
-				Nd4j.create(1, 3, 1, 4, 1), 
-				Collections.unmodifiableList(Lists.newLinkedList())
-			);
-		/*this.testSqueeze(
-				Nd4j.create(0,0), 
-				Nd4j.create(1, 1, 1, 1, 1), 
-				Lists.newLinkedList()
-			);*/
-	}
-
-	protected void testSqueeze(INDArray excepted, INDArray data, List<Long> axes) {
+	protected void testReduceMax(INDArray excepted, INDArray data, List<Long> axes, Long keepdims) {
 		try (DL4JSession session = new DL4JSession(null, null)) {
-			INDArray y = this.executeOperator(data, axes);
+			INDArray y = this.executeOperator(data, axes, keepdims);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
 					y.shapeInfoToString()));
-			assertTrue(y.equalShapes(excepted));
+			assertTrue(y.equals(excepted));
 		}
 	}
 
-	protected INDArray executeOperator(INDArray data, List<Long> axes) {
-		DL4JSqueezeV1 operator = new DL4JSqueezeV1();
-		INDArray y = operator.squeeze(data, axes);
+	protected INDArray executeOperator(INDArray data, List<Long> axes, Long keepdims) {
+		DL4JReduceMaxV1 operator = new DL4JReduceMaxV1();
+		INDArray y = operator.reduceMax(data, axes, keepdims);
 		return y;
 	}
 

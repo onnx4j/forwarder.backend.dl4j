@@ -32,55 +32,50 @@ import org.nd4j.linalg.factory.Nd4j;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
 
-public class DL4JSqueezeV1Test extends DL4JTestCase {
+public class DL4JUnsqueezeV1Test extends DL4JTestCase {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
 	public void testWithAxes() {
-		this.testSqueeze(
-				Nd4j.create(2, 4, 1), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(1))
-			);
-		this.testSqueeze(
+		this.testUnsqueeze(
+				Nd4j.create(1, 2, 4, 1), 
 				Nd4j.create(2, 4), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(1, 3))
+				Collections.unmodifiableList(Longs.asList(3, 0))
+			);
+		this.testUnsqueeze(
+				Nd4j.create(1, 2, 4, 1), 
+				Nd4j.create(2, 4), 
+				Collections.unmodifiableList(Longs.asList(3, 0))
 			);
 	}
 
 	@Test
-	public void testWithShapeEntryNotEqualToOne() {
+	public void testWithAxisOverflow() {
 		thrown.expect(IllegalArgumentException.class);
-		this.testSqueeze(
+		this.testUnsqueeze(
 				null, 
 				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Longs.asList(0))
+				Longs.asList(6)
 			);
 	}
 
 	@Test
 	public void testWithEmptyAxes() {
-		this.testSqueeze(
+		this.testUnsqueeze(
 				Nd4j.create(2, 4), 
-				Nd4j.create(2, 1, 4, 1), 
-				Collections.unmodifiableList(Lists.newLinkedList())
-			);
-		this.testSqueeze(
-				Nd4j.create(3, 4), 
-				Nd4j.create(1, 3, 1, 4, 1), 
-				Collections.unmodifiableList(Lists.newLinkedList())
-			);
-		/*this.testSqueeze(
-				Nd4j.create(0,0), 
-				Nd4j.create(1, 1, 1, 1, 1), 
+				Nd4j.create(2, 4), 
 				Lists.newLinkedList()
-			);*/
+			);
+		this.testUnsqueeze(
+				Nd4j.create(3, 4, 1), 
+				Nd4j.create(3, 4, 1), 
+				Lists.newLinkedList()
+			);
 	}
 
-	protected void testSqueeze(INDArray excepted, INDArray data, List<Long> axes) {
+	protected void testUnsqueeze(INDArray excepted, INDArray data, List<Long> axes) {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			INDArray y = this.executeOperator(data, axes);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
@@ -90,8 +85,8 @@ public class DL4JSqueezeV1Test extends DL4JTestCase {
 	}
 
 	protected INDArray executeOperator(INDArray data, List<Long> axes) {
-		DL4JSqueezeV1 operator = new DL4JSqueezeV1();
-		INDArray y = operator.squeeze(data, axes);
+		DL4JUnsqueezeV1 operator = new DL4JUnsqueezeV1();
+		INDArray y = operator.unsqueeze(data, axes);
 		return y;
 	}
 
