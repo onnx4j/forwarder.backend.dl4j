@@ -42,7 +42,7 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 	@Test
-	public void testWithSampleShape1() {
+	public void testWithSampleShape1() throws Exception {
 		try (INDArray excepted = Nd4j.create(256, 256, 3);
 				INDArray a = Nd4j.create(256, 256, 3);
 				INDArray b = Nd4j.create(256, 256, 3)) {
@@ -59,9 +59,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * Scale  (1d array):             3
 	 * Result (3d array): 256 x 256 x 3
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting1() {
+	public void testWithBroadcasting1() throws Exception {
 		try (INDArray excepted = Nd4j.create(256, 256, 3);
 				INDArray a = Nd4j.create(256, 256, 3);
 				INDArray b = Nd4j.create(3)) {
@@ -78,9 +79,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (3d array):      7 x 1 x 5
 	 * Result (4d array):  8 x 7 x 6 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting2() {
+	public void testWithBroadcasting2() throws Exception {
 		try (INDArray excepted = Nd4j.create(8, 7, 6, 5);
 				INDArray a = Nd4j.create(8, 1, 6, 1);
 				INDArray b = Nd4j.create(7, 1, 5)) {
@@ -97,9 +99,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (1d array):      1
 	 * Result (2d array):  5 x 4
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting3() {
+	public void testWithBroadcasting3() throws Exception {
 		try (INDArray excepted = Nd4j.create(5, 4); INDArray a = Nd4j.create(5, 4); INDArray b = Nd4j.create(1)) {
 			List<INDArray> dataList = new LinkedList<INDArray>();
 			dataList.add(a);
@@ -114,9 +117,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (1d array):      4
 	 * Result (2d array):  5 x 4
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting4() {
+	public void testWithBroadcasting4() throws Exception {
 		try (INDArray excepted = Nd4j.create(5, 4); INDArray a = Nd4j.create(5, 4); INDArray b = Nd4j.create(4)) {
 			List<INDArray> dataList = new LinkedList<INDArray>();
 			dataList.add(a);
@@ -131,9 +135,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (3d array):  15 x 1 x 5
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting5() {
+	public void testWithBroadcasting5() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(15, 1, 5)) {
@@ -150,9 +155,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (2d array):       3 x 5
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting6() {
+	public void testWithBroadcasting6() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(3, 5)) {
@@ -169,9 +175,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * B      (2d array):       3 x 1
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting7() {
+	public void testWithBroadcasting7() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(3, 1)) {
@@ -187,9 +194,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * A      (1d array):  3
 	 * B      (1d array):  4 # trailing dimensions do not match
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting8() {
+	public void testWithBroadcasting8() throws Exception {
 		try (INDArray excepted = null; INDArray a = Nd4j.create(3); INDArray b = Nd4j.create(4)) {
 			thrown.expect(IllegalStateException.class);
 			List<INDArray> dataList = new LinkedList<INDArray>();
@@ -204,9 +212,10 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	 * A      (2d array):      2 x 1
 	 * B      (3d array):  8 x 4 x 3 # second from last dimensions mismatched
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void testWithBroadcasting9() {
+	public void testWithBroadcasting9() throws Exception {
 		try (INDArray excepted = null; INDArray a = Nd4j.create(2, 1); INDArray b = Nd4j.create(8, 4, 3)) {
 			thrown.expect(IllegalStateException.class);
 			List<INDArray> dataList = new LinkedList<INDArray>();
@@ -216,7 +225,7 @@ public class DL4JSumV8Test extends DL4JTestCase {
 		}
 	}
 
-	private void testSum(INDArray excepted, List<INDArray> dataList) {
+	private void testSum(INDArray excepted, List<INDArray> dataList) throws Exception {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			DL4JSumV8 operator = new DL4JSumV8();
 			INDArray y = operator.sum(dataList);

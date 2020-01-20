@@ -29,12 +29,12 @@ import org.nd4j.linalg.factory.Nd4j;
 public class DL4JCastV9Test extends DL4JTestCase {
 
 	@Test
-	public void testCastStringToInt() {
+	public void testCastStringToInt() throws Exception {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			INDArray x0 = Nd4j.create(new String[] { "100.5", "-10" });
 			assertEquals(x0.dataType(), DataType.UTF8);
 			DL4JCastV9 operator = new DL4JCastV9();
-			INDArray y0 = operator.cast(x0, org.onnx4j.onnx.prototypes.OnnxProto3.TensorProto.DataType.INT32 + "");
+			INDArray y0 = operator.cast(x0, org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.INT32 + "");
 			assertEquals(y0.dataType(), DataType.INT);
 			assertTrue(Nd4j.create(new int[] { 100, -10 }, new long[] { 2 }, DataType.INT).equals(y0));
 			y0.close();

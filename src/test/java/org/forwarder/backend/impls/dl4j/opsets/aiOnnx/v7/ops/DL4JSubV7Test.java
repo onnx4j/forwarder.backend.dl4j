@@ -45,9 +45,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * Scale  (1d array):             3
 	 * Result (3d array): 256 x 256 x 3
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test1() {
+	public void test1() throws Exception {
 		try (INDArray excepted = Nd4j.create(256, 256, 3);
 				INDArray a = Nd4j.create(256, 256, 3);
 				INDArray b = Nd4j.create(3)) {
@@ -62,9 +63,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (3d array):      7 x 1 x 5
 	 * Result (4d array):  8 x 7 x 6 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test2() {
+	public void test2() throws Exception {
 		try (INDArray excepted = Nd4j.create(8, 7, 6, 5);
 				INDArray a = Nd4j.create(8, 1, 6, 1);
 				INDArray b = Nd4j.create(7, 1, 5)) {
@@ -79,9 +81,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (1d array):      1
 	 * Result (2d array):  5 x 4
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test3() {
+	public void test3() throws Exception {
 		try (INDArray excepted = Nd4j.create(5, 4); INDArray a = Nd4j.create(5, 4); INDArray b = Nd4j.create(1)) {
 			this.testSub(excepted, a, b);
 			this.testSub(excepted, b, a);
@@ -94,9 +97,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (1d array):      4
 	 * Result (2d array):  5 x 4
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test4() {
+	public void test4() throws Exception {
 		try (INDArray excepted = Nd4j.create(5, 4); INDArray a = Nd4j.create(5, 4); INDArray b = Nd4j.create(4)) {
 			this.testSub(excepted, a, b);
 			this.testSub(excepted, b, a);
@@ -109,9 +113,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (3d array):  15 x 1 x 5
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test5() {
+	public void test5() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(15, 1, 5)) {
@@ -126,9 +131,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (2d array):       3 x 5
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test6() {
+	public void test6() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(3, 5)) {
@@ -143,9 +149,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * B      (2d array):       3 x 1
 	 * Result (3d array):  15 x 3 x 5
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test7() {
+	public void test7() throws Exception {
 		try (INDArray excepted = Nd4j.create(15, 3, 5);
 				INDArray a = Nd4j.create(15, 3, 5);
 				INDArray b = Nd4j.create(3, 1)) {
@@ -159,9 +166,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * A      (1d array):  3
 	 * B      (1d array):  4 # trailing dimensions do not match
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test8() {
+	public void test8() throws Exception {
 		try (INDArray excepted = null; INDArray a = Nd4j.create(3); INDArray b = Nd4j.create(4)) {
 			thrown.expect(IllegalStateException.class);
 			this.testSub(excepted, a, b);
@@ -174,9 +182,10 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	 * A      (2d array):      2 x 1
 	 * B      (3d array):  8 x 4 x 3 # second from last dimensions mismatched
 	 * </pre>
+	 * @throws Exception 
 	 */
 	@Test
-	public void test9() {
+	public void test9() throws Exception {
 		try (INDArray excepted = null; INDArray a = Nd4j.create(2, 1); INDArray b = Nd4j.create(8, 4, 3)) {
 			thrown.expect(IllegalStateException.class);
 			this.testSub(excepted, a, b);
@@ -184,7 +193,7 @@ public class DL4JSubV7Test extends DL4JTestCase {
 		}
 	}
 
-	private void testSub(INDArray excepted, INDArray a, INDArray b) {
+	private void testSub(INDArray excepted, INDArray a, INDArray b) throws Exception {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			DL4JSubV7 operator = new DL4JSubV7();
 			INDArray y = operator.sub(a, b);

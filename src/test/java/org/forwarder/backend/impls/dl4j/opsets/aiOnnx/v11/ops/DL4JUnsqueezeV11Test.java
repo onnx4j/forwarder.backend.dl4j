@@ -37,7 +37,7 @@ public class DL4JUnsqueezeV11Test extends DL4JTestCase {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void testWithAxisOverflow() {
+	public void testWithAxisOverflow() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		this.testUnsqueeze(
 				null, 
@@ -52,7 +52,7 @@ public class DL4JUnsqueezeV11Test extends DL4JTestCase {
 	}
 
 	@Test
-	public void testWithPositiveAxes() {
+	public void testWithPositiveAxes() throws Exception {
 		this.testUnsqueeze(
 				Nd4j.create(1, 3, 4, 5, 1), 
 				Nd4j.create(3, 4, 5), 
@@ -66,7 +66,7 @@ public class DL4JUnsqueezeV11Test extends DL4JTestCase {
 	}
 
 	@Test
-	public void testWithNegativeAxes() {
+	public void testWithNegativeAxes() throws Exception {
 		this.testUnsqueeze(
 				Nd4j.create(1, 2, 4, 1), 
 				Nd4j.create(1, 2, 4), 
@@ -79,7 +79,7 @@ public class DL4JUnsqueezeV11Test extends DL4JTestCase {
 			);
 	}
 
-	protected void testUnsqueeze(INDArray excepted, INDArray data, List<Long> axes) {
+	protected void testUnsqueeze(INDArray excepted, INDArray data, List<Long> axes) throws Exception {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			INDArray y = this.executeOperator(data, axes);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),

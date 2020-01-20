@@ -26,7 +26,10 @@ import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.onnx4j.Model;
+import org.onnx4j.Tensor;
+import org.onnx4j.TensorManager;
 import org.onnx4j.tensor.Shape;
+import org.onnx4j.tensor.TensorBuilder;
 
 public class DL4JBackend extends Backend<INDArray> {
 
@@ -47,11 +50,12 @@ public class DL4JBackend extends Backend<INDArray> {
 
 	@Override
 	public void disposeBackendTensor(INDArray backendTensor) {
-		backendTensor.close();
+		if (backendTensor.closeable())
+			backendTensor.close();
 	}
 
 	@Override
-	public INDArray toBackendTensor(org.onnx4j.Tensor rawTensor) {
+	public INDArray toBackendTensor(TensorManager<INDArray> tensorManager, org.onnx4j.Tensor rawTensor) {
 		DataBuffer dataBuffer = null;
 		switch (rawTensor.getDataType()) {
 		case UINT8:
@@ -60,25 +64,20 @@ public class DL4JBackend extends Backend<INDArray> {
 		case INT8:
 		case INT16:
 		case INT32:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.INT,
-					(int) rawTensor.getElementSize());
+			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.INT, (int) rawTensor.getElementSize());
 			break;
 		case UINT64:
 		case INT64:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.LONG,
-					(int) rawTensor.getElementSize());
+			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.LONG, (int) rawTensor.getElementSize());
 			break;
 		case FLOAT16:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.HALF,
-					(int) rawTensor.getElementSize());
+			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.HALF, (int) rawTensor.getElementSize());
 			break;
 		case FLOAT:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.FLOAT,
-					(int) rawTensor.getElementSize());
+			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.FLOAT, (int) rawTensor.getElementSize());
 			break;
 		case DOUBLE:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.DOUBLE,
-					(int) rawTensor.getElementSize());
+			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.DOUBLE, (int) rawTensor.getElementSize());
 			break;
 		default:
 			throw new UnsupportedOperationException(
@@ -87,11 +86,12 @@ public class DL4JBackend extends Backend<INDArray> {
 
 		int shape[] = Arrays.stream(rawTensor.getShape()).mapToInt(i -> (int) i).toArray();
 		INDArray ndArray = Nd4j.create(dataBuffer, shape);
+		tensorManager.attach(rawTensor.getName(), ndArray);
 		return ndArray;
 	}
 
 	@Override
-	public org.onnx4j.Tensor toTensor(INDArray backendTensor) {
+	public org.onnx4j.Tensor toNativeTensor(TensorManager<Tensor> tensorManager, String name, INDArray backendTensor) {
 		org.onnx4j.tensor.DataType nativeDataType = null;
 		switch (backendTensor.data().dataType()) {
 		case INT:
@@ -113,16 +113,13 @@ public class DL4JBackend extends Backend<INDArray> {
 			throw new UnsupportedOperationException(
 					String.format("DataType \"%s\" not be supported in ONNX4J", backendTensor.data().dataType()));
 		}
-		
-		return new org.onnx4j.Tensor(
-					nativeDataType, 
-					Shape.create(backendTensor.shape()),
-					backendTensor.data().asNio()
-				);
 
-		/*return new org.onnx4j.Tensor(nativeDataType,
-				Shape.create(backendTensor.shape()),
-				Memory.builder(backendTensor.data().asNio()).build());*/
+		return TensorBuilder
+				.builder(nativeDataType, Shape.create(backendTensor.shape()), backendTensor.data().asNio())
+				.name(name)
+				.docString("Created from org.nd4j.linalg.api.ndarray.INDArray in DL4JBackend.toTensor()")
+				.manager(tensorManager)
+				.build();
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class DL4JRedeceMaxV1Test extends DL4JTestCase {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void testWithKeepdims() {
+	public void testWithKeepdims() throws Exception {
 		this.testReduceMax(
 				Nd4j.create(new float[][] {
 					{ 4.5f, 5.7f }
@@ -65,7 +65,7 @@ public class DL4JRedeceMaxV1Test extends DL4JTestCase {
 	}
 
 	@Test
-	public void testWithoutKeepdims() {
+	public void testWithoutKeepdims() throws Exception {
 		this.testReduceMax(
 				Nd4j.create(new float[] {
 					4.5f, 5.7f
@@ -90,7 +90,7 @@ public class DL4JRedeceMaxV1Test extends DL4JTestCase {
 				0L);
 	}
 
-	protected void testReduceMax(INDArray excepted, INDArray data, List<Long> axes, Long keepdims) {
+	protected void testReduceMax(INDArray excepted, INDArray data, List<Long> axes, Long keepdims) throws Exception {
 		try (DL4JSession session = new DL4JSession(null, null)) {
 			INDArray y = this.executeOperator(data, axes, keepdims);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),

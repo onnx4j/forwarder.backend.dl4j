@@ -26,7 +26,8 @@ public class DL4JConstantV1 extends DL4JAiOnnxOperator implements ConstantV1<IND
 
 	@Override
 	public INDArray constant(Tensor x0) {
-		return DL4JSession.getSession().getBackend().toBackendTensor(x0);
+		DL4JSession session = DL4JSession.getSession();
+		return session.getBackend().toBackendTensor(session.getTensorManager(), x0);
 	}
 
 }

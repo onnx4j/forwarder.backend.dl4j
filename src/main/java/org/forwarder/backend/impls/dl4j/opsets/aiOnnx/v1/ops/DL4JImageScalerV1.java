@@ -34,7 +34,7 @@ public class DL4JImageScalerV1 extends DL4JAiOnnxOperator implements ImageScaler
 		INDArray out = input.mul(scale);
 		if (bias != null) {
 			SameDiff sameDiff = DL4JSession.get();
-			sameDiff.nn.biasAdd(sameDiff.constant(out), sameDiff.constant(Nd4j.create(Floats.toArray(bias))));
+			sameDiff.nn.biasAdd(sameDiff.constant(out), sameDiff.constant(Nd4j.create(Floats.toArray(bias)))/*, true*/);
 		}
 		return out;
 	}

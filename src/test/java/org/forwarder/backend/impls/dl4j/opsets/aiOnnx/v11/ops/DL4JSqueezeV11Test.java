@@ -29,7 +29,7 @@ import com.google.common.primitives.Longs;
 public class DL4JSqueezeV11Test extends DL4JSqueezeV1Test {
 
 	@Test
-	public void testWithNegativeAxes() {
+	public void testWithNegativeAxes() throws Exception {
 		this.testSqueeze(
 				Nd4j.create(2, 1, 4), 
 				Nd4j.create(2, 1, 4, 1), 
@@ -43,7 +43,7 @@ public class DL4JSqueezeV11Test extends DL4JSqueezeV1Test {
 	}
 
 	@Test
-	public void testWithNegativeAxesButShapeEntryNotEqualToOne() {
+	public void testWithNegativeAxesButShapeEntryNotEqualToOne() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		this.testSqueeze(
 				null, 
