@@ -44,6 +44,7 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSqueezeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSubV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JTransposeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JUnsqueezeV1;
 import org.forwarder.opset.annotations.Opset;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -75,6 +76,7 @@ import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SqueezeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.opsets.aiOnnx.v1.ops.TransposeV1;
 import org.onnx4j.opsets.aiOnnx.v1.ops.UnsqueezeV1;
 
 @Opset(backendName = DL4JBackend.BACKEND_NAME)
@@ -164,6 +166,9 @@ public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements Ai
 
 	@Override
 	public ReduceMaxV1<INDArray> getReduceMaxV1() { return new DL4JReduceMaxV1(); }
+
+	@Override
+	public TransposeV1<INDArray> getTransposeV1() { return new DL4JTransposeV1(); }
 
 	public DL4JAiOnnxOperatorSetV1() {
 		this(1, "", "", 1L, "ONNX OPSET-V1 USING DL4J BACKEND");
