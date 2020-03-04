@@ -7,7 +7,7 @@
 * Linux/MacOS/Windows
 * Maven
 * Oracle JRE 1.8
-* 符合ONNX规范的模型文件（当前最高支持v9的指令集）
+* 符合ONNX规范的模型文件（当前最高支持v12的指令集）
 > 注意：对于操作系统与JRE的要求视Nd4j的支持而定。
 
 ### 依赖
@@ -71,7 +71,7 @@ try (Backend<?> backend = this.model.backend(backendName)) {
 ```
 
 ### 高性能计算支持
-项目中，在依赖org.onnx4j.backend.dl4j的基础上，通过添加额外的Nd4j依赖包，Nd4j会自动优先加载更高优先级的运行负载，以此可支持AVX2、AVX512、GPU进行更快速的运算。
+项目中，在依赖forwarder.backend.dl4j的基础上，通过添加额外的Nd4j依赖包，Nd4j会自动优先加载更高优先级的运行负载，以此可支持CPU（AVX2与AVX512指令集）和GPU进行更快速的运算。
 
 * Windows平台下的AVX2指令集支持
 ```
