@@ -20,19 +20,25 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.TransposeV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.TransposeV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
 import com.google.common.primitives.Ints;
 
-public class DL4JTransposeV1 extends DL4JAiOnnxOperator implements TransposeV1<INDArray> {
+public class DL4JTransposeV1 extends DL4JAiOnnxOperator
+		implements TransposeV1 {
 
 	@Override
-	public OperatorStatus getStatus() {
-		return OperatorStatus.STABLE;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		TransposeInputsV1<INDArray> castedOperatorInputs = new TransposeInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		List<Long> perm = castedOperatorInputs.getPerm();
+		return new TransposeOutputV1<INDArray>(this.transpose(data, perm));
 	}
 
-	@Override
-	public INDArray transpose(INDArray data, List<Long> perm) {
+	protected INDArray transpose(INDArray data, List<Long> perm) {
 		return data.permute(Ints.toArray(perm));
 	}
 

@@ -16,25 +16,28 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SigmoidV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSigmoidV1 extends DL4JAiOnnxOperator implements SigmoidV1<INDArray> {
+public class DL4JSigmoidV1 extends DL4JAiOnnxOperator implements SigmoidV1 {
 
 	@Override
-	public INDArray sigmoid(INDArray x, List<Long> consumedInputs) {
-		SameDiff sameDiff = DL4JSession.get();
-		SDVariable sigmoid = sameDiff.nn.sigmoid(sameDiff.constant(x));
-		return sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				sigmoid.getVarName());
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SigmoidInputsV1<INDArray> castedOperatorInputs = new SigmoidInputsV1<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new SigmoidOutputV1<INDArray>(this.sigmoid(x, consumedInputs));
 	}
-	
+
+	protected INDArray sigmoid(INDArray x, List<Long> consumedInputs) {
+		return Nd4j.nn.sigmoid(x);
+	}
+
 }

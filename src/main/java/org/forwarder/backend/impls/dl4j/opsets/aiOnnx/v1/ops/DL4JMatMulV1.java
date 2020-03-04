@@ -18,12 +18,22 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.MatMulV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.MatMulV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JMatMulV1 extends DL4JAiOnnxOperator implements MatMulV1<INDArray> {
+public class DL4JMatMulV1 extends DL4JAiOnnxOperator implements MatMulV1 {
 
 	@Override
-	public INDArray matmul(INDArray x0, INDArray x1) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		MatMulInputsV1<INDArray> castedOperatorInputs = new MatMulInputsV1<INDArray>(node, inputs);
+		INDArray a = castedOperatorInputs.getA();
+		INDArray b = castedOperatorInputs.getB();
+		return new MatMulOutputV1<INDArray>(this.matmul(a, b));
+	}
+
+	protected INDArray matmul(INDArray x0, INDArray x1) {
 		return x0.mmul(x1);
 	}
 

@@ -20,12 +20,21 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v6.ops.SumV6;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v6.ops.SumV6;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSumV6 extends DL4JSumV1 implements SumV6<INDArray> {
+public class DL4JSumV6 extends DL4JSumV1 implements SumV6 {
 
 	@Override
-	public INDArray sum(List<INDArray> dataList) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SumInputsV6<INDArray> castedOperatorInputs = new SumInputsV6<INDArray>(node, inputs);
+		List<INDArray> dataList = castedOperatorInputs.getInputs();
+		return new SumOutputV6<INDArray>(this.sum(dataList));
+	}
+
+	protected INDArray sum(List<INDArray> dataList) {
 		return super.sum(dataList, null);
 	}
 }

@@ -20,12 +20,25 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JAveragePoolV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v7.ops.AveragePoolV7;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v7.ops.AveragePoolV7;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JAveragePoolV7 extends DL4JAveragePoolV1 implements AveragePoolV7<INDArray> {
+public class DL4JAveragePoolV7 extends DL4JAveragePoolV1 implements AveragePoolV7 {
 
 	@Override
-	public INDArray averagePool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		AveragePoolInputsV7<INDArray> castedOperatorInputs = new AveragePoolInputsV7<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		String autoPad = castedOperatorInputs.getAutoPad();
+		List<Long> kernelShape = castedOperatorInputs.getKernelShape();
+		List<Long> pads = castedOperatorInputs.getPads();
+		List<Long> strides = castedOperatorInputs.getStrides();
+		return new AveragePoolOutputV7<INDArray>(this.averagePool(x, autoPad, kernelShape, pads, strides));
+	}
+
+	protected INDArray averagePool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
 			List<Long> strides, Long countIncludePad) {
 		if (countIncludePad != null && countIncludePad != 0L)
 			throw new UnsupportedOperationException(

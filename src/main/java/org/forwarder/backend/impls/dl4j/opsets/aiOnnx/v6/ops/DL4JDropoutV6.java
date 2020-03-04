@@ -16,17 +16,22 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops;
 
-import java.util.List;
-
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JDropoutV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v6.ops.DropoutV6;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v6.ops.DropoutV6;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JDropoutV6 extends DL4JDropoutV1 implements DropoutV6<INDArray> {
+public class DL4JDropoutV6 extends DL4JDropoutV1 implements DropoutV6 {
 
 	@Override
-	public List<INDArray> dropout(INDArray data, Boolean isTest, Float ratio) {
-		return super.dropout(data, isTest, ratio, null);
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		DropoutInputsV6<INDArray> castedOperatorInputs = new DropoutInputsV6<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		Boolean isTest = castedOperatorInputs.isTest();
+		Float ratio = castedOperatorInputs.getRatio();
+		return new DropoutOutputV6<INDArray>(super.dropout(data, isTest, ratio, null));
 	}
 
 }

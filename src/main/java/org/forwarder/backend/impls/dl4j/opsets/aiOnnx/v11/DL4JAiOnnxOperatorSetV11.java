@@ -21,26 +21,25 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JReduceMaxV11;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JSoftmaxV11;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JSqueezeV11;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops.DL4JUnsqueezeV11;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v11.AiOnnxOperatorSetSpecV11;
-import org.onnx4j.opsets.aiOnnx.v11.ops.ReduceMaxV11;
-import org.onnx4j.opsets.aiOnnx.v11.ops.SoftmaxV11;
-import org.onnx4j.opsets.aiOnnx.v11.ops.SqueezeV11;
-import org.onnx4j.opsets.aiOnnx.v11.ops.UnsqueezeV11;
+import org.onnx4j.opsets.domain.aiOnnx.v11.AiOnnxOpsetInitializerV11;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.ReduceMaxV11;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.SoftmaxV11;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.SqueezeV11;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.UnsqueezeV11;
 
-public class DL4JAiOnnxOperatorSetV11 extends DL4JAiOnnxOperatorSetV10 implements AiOnnxOperatorSetSpecV11<INDArray> {
-
-	@Override
-	public SoftmaxV11<INDArray> getSoftmaxV11() { return new DL4JSoftmaxV11(); }
+public class DL4JAiOnnxOperatorSetV11 extends DL4JAiOnnxOperatorSetV10 implements AiOnnxOpsetInitializerV11 {
 
 	@Override
-	public SqueezeV11<INDArray> getSqueezeV11() { return new DL4JSqueezeV11(); }
+	public SoftmaxV11 getSoftmaxV11() { return new DL4JSoftmaxV11(); }
 
 	@Override
-	public UnsqueezeV11<INDArray> getUnsqueezeV11() { return new DL4JUnsqueezeV11(); }
+	public SqueezeV11 getSqueezeV11() { return new DL4JSqueezeV11(); }
 
 	@Override
-	public ReduceMaxV11<INDArray> getReduceMaxV11() { return new DL4JReduceMaxV11(); }
+	public UnsqueezeV11 getUnsqueezeV11() { return new DL4JUnsqueezeV11(); }
+
+	@Override
+	public ReduceMaxV11 getReduceMaxV11() { return new DL4JReduceMaxV11(); }
 
 	public DL4JAiOnnxOperatorSetV11() {
 		super(1, "", "", 11L, "ONNX OPSET-V11 USING DL4J BACKEND");

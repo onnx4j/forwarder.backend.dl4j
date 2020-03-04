@@ -21,14 +21,29 @@ import java.util.List;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Broadcast;
-import org.onnx4j.opsets.aiOnnx.v1.ops.AddV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.AddV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JAddV1 extends DL4JAiOnnxOperator implements AddV1<INDArray> {
+public class DL4JAddV1 extends DL4JAiOnnxOperator implements AddV1 {
 
 	@Override
-	public INDArray add(INDArray a, INDArray b, Long axis, Long broadcast, List<Long> consumedInputs) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		AddInputsV1<INDArray> castedOperatorInputs = new AddInputsV1<INDArray>(node, inputs);
+		INDArray a = castedOperatorInputs.getA();
+		INDArray b = castedOperatorInputs.getB();
+		Long axis = castedOperatorInputs.getAxis();
+		Long broadcast = castedOperatorInputs.getBroadcast();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new AddOutputV1<INDArray>(this.add(a, b, axis, broadcast, consumedInputs));
+	}
+
+	protected INDArray add(INDArray a, INDArray b, Long axis, Long broadcast, List<Long> consumedInputs) {
 		if (broadcast == 1L) {
-			return Broadcast.add(a, b, a, axis.intValue());
+			INDArray out = Nd4j.createUninitialized(a.shape(), a.ordering());
+			return Broadcast.add(a, b, out, (axis != null) ? axis.intValue() : 0);
 		} else {
 			return a.add(b);
 		}

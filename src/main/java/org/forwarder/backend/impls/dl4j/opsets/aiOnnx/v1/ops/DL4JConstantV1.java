@@ -19,13 +19,22 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.onnx4j.Inputs;
 import org.onnx4j.Tensor;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConstantV1;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConstantV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JConstantV1 extends DL4JAiOnnxOperator implements ConstantV1<INDArray> {
+public class DL4JConstantV1 extends DL4JAiOnnxOperator implements ConstantV1 {
 
 	@Override
-	public INDArray constant(Tensor x0) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ConstantInputsV1<INDArray> castedOperatorInputs = new ConstantInputsV1<INDArray>(node, inputs);
+		Tensor value = castedOperatorInputs.getValue();
+		return new ConstantOutputV1<INDArray>(this.constant(value));
+	}
+
+	protected INDArray constant(Tensor x0) {
 		DL4JSession session = DL4JSession.getSession();
 		return session.getBackend().toBackendTensor(session.getTensorManager(), x0);
 	}

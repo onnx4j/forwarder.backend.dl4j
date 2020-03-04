@@ -16,34 +16,28 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.forwarder.backend.impls.dl4j.DL4JSession;
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JBatchNormalizationV1;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JBatchNormalizationV6;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v7.ops.BatchNormalizationV7;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v7.ops.BatchNormalizationV7;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JBatchNormalizationV7 extends DL4JBatchNormalizationV1 implements BatchNormalizationV7<INDArray> {
+public class DL4JBatchNormalizationV7 extends DL4JBatchNormalizationV6 implements BatchNormalizationV7 {
 
 	@Override
-	public INDArray[] batchNormalization(INDArray x, INDArray scale, INDArray b, INDArray mean, INDArray var,
-			List<Long> consumedInputs, Float epsilon, Float momentum, Boolean spatial) {
-		SameDiff sameDiff = DL4JSession.get();
-		SDVariable batchNorm = sameDiff.nn.batchNorm(
-				sameDiff.constant(x), 
-				sameDiff.constant(mean), 
-				sameDiff.constant(var), 
-				sameDiff.constant(scale), 
-				sameDiff.constant(b), 
-				epsilon, 
-				1);
-		INDArray[] out = new INDArray[] { sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				batchNorm.getVarName()) };
-		return out;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		BatchNormalizationInputsV6<INDArray> castedOperatorInputs = new BatchNormalizationInputsV7<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		INDArray scale = castedOperatorInputs.getScale();
+		INDArray b = castedOperatorInputs.getB();
+		INDArray mean = castedOperatorInputs.getMean();
+		INDArray var = castedOperatorInputs.getVar();
+		Float epsilon = castedOperatorInputs.getEpsilon();
+		Float momentum = castedOperatorInputs.getMomentum();
+		Boolean spatial = castedOperatorInputs.isSpatial();
+		return new BatchNormalizationOutputsV7<INDArray>(
+				this.batchNormalization(x, scale, b, mean, var, null, epsilon, true, momentum, spatial));
 	}
 
 }

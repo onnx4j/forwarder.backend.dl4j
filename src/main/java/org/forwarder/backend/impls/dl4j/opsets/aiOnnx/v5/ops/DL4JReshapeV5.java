@@ -22,15 +22,25 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v5.ops.ReshapeV5;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v5.ops.ReshapeV5;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
 import com.google.common.collect.Lists;
 
-public class DL4JReshapeV5 extends DL4JReshapeV1 implements ReshapeV5<INDArray> {
+public class DL4JReshapeV5 extends DL4JReshapeV1 implements ReshapeV5 {
 
 	@Override
-	public INDArray reshape(INDArray data, INDArray shape, List<Long> consumedInputs) {
-		return super.reshape(data, Lists.newArrayList(this.calcNewShape(data, shape)), consumedInputs);
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ReshapeInputsV5<INDArray> castedOperatorInputs = new ReshapeInputsV5<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		INDArray shape = castedOperatorInputs.getShapeTensor();
+		return new ReshapeOutputV5<INDArray>(this.reshape(data, shape));
+	}
+
+	protected INDArray reshape(INDArray data, INDArray shape) {
+		return super.reshape(data, Lists.newArrayList(this.calcNewShape(data, shape)), null);
 	}
 
 	protected List<Long> calcNewShape(INDArray inputTensor, INDArray shapeTensor) {

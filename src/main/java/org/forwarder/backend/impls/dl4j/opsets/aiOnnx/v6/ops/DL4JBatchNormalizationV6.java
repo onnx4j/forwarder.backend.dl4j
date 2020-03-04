@@ -16,32 +16,29 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops;
 
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMulV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JBatchNormalizationV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Broadcast;
 import org.onnx4j.Inputs;
 import org.onnx4j.model.graph.Node;
-import org.onnx4j.opsets.domain.aiOnnx.v6.ops.MulV6;
+import org.onnx4j.opsets.domain.aiOnnx.v6.ops.BatchNormalizationV6;
 import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JMulV6 extends DL4JMulV1 implements MulV6 {
+public class DL4JBatchNormalizationV6 extends DL4JBatchNormalizationV1 implements BatchNormalizationV6 {
 
 	@Override
 	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
-		MulInputsV6<INDArray> castedOperatorInputs = new MulInputsV6<INDArray>(node, inputs);
-		INDArray a = castedOperatorInputs.getA();
+		BatchNormalizationInputsV6<INDArray> castedOperatorInputs = new BatchNormalizationInputsV6<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		INDArray scale = castedOperatorInputs.getScale();
 		INDArray b = castedOperatorInputs.getB();
-		Long axis = castedOperatorInputs.getAxis();
-		Long broadcast = castedOperatorInputs.getBroadcast();
-		return new MulOutputV6<INDArray>(this.mul(a, b, axis, broadcast));
-	}
-
-	protected INDArray mul(INDArray a, INDArray b, Long axis, Long broadcast) {
-		if (broadcast == 1L) {
-			return Broadcast.mul(a, b, a, axis.intValue());
-		} else {
-			return a.mul(b);
-		}
+		INDArray mean = castedOperatorInputs.getMean();
+		INDArray var = castedOperatorInputs.getVar();
+		Boolean isTest = castedOperatorInputs.isTest();
+		Float epsilon = castedOperatorInputs.getEpsilon();
+		Float momentum = castedOperatorInputs.getMomentum();
+		Boolean spatial = castedOperatorInputs.isSpatial();
+		return new BatchNormalizationOutputsV6<INDArray>(
+				this.batchNormalization(x, scale, b, mean, var, null, epsilon, isTest, momentum, spatial));
 	}
 
 }

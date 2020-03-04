@@ -18,12 +18,23 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v11.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v11.ops.SoftmaxV11;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.SoftmaxV11;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSoftmaxV11 extends DL4JSoftmaxV1 implements SoftmaxV11<INDArray> {
+public class DL4JSoftmaxV11 extends DL4JSoftmaxV1 implements SoftmaxV11 {
 
 	@Override
-	public INDArray softmax(INDArray input, Long axis) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SoftmaxInputsV11<INDArray> castedOperatorInputs = new SoftmaxInputsV11<INDArray>(node, inputs);
+		INDArray input = castedOperatorInputs.getInput();
+		Long axis = castedOperatorInputs.getAxis();
+		return new SoftmaxOutputV11<INDArray>(this.softmax(input, axis));
+	}
+
+	@Override
+	protected INDArray softmax(INDArray input, Long axis) {
 		return super.softmax(input, axis);
 	}
 

@@ -18,25 +18,36 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.broadcast.BiasAdd;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.shade.guava.primitives.Floats;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ImageScalerV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ImageScalerV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
 @Deprecated
-public class DL4JImageScalerV1 extends DL4JAiOnnxOperator implements ImageScalerV1<INDArray> {
+public class DL4JImageScalerV1 extends DL4JAiOnnxOperator implements ImageScalerV1 {
 
 	@Override
-	public INDArray scale(INDArray input, Float scale, List<Float> bias) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ImageScalerInputsV1<INDArray> castedOperatorInputs = new ImageScalerInputsV1<INDArray>(node, inputs);
+		INDArray input = castedOperatorInputs.getInput();
+		Float scale = castedOperatorInputs.getScale();
+		List<Float> bias = castedOperatorInputs.getBias();
+		return new ImageScalerOutputV1<INDArray>(this.scale(input, scale, bias));
+	}
+
+	protected INDArray scale(INDArray input, Float scale, List<Float> bias) {
 		INDArray out = input.mul(scale);
 		if (bias != null) {
-			SameDiff sameDiff = DL4JSession.get();
-			sameDiff.nn.biasAdd(sameDiff.constant(out), sameDiff.constant(Nd4j.create(Floats.toArray(bias)))/*, true*/);
+			BiasAdd biasAddOp = new BiasAdd(out, Nd4j.create(Floats.toArray(bias)), true);
+			return Nd4j.exec(biasAddOp)[0];
+		} else {
+			return out;
 		}
-		return out;
 	}
 
 }

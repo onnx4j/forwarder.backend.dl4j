@@ -91,7 +91,7 @@ public class DL4JRedeceMaxV1Test extends DL4JTestCase {
 	}
 
 	protected void testReduceMax(INDArray excepted, INDArray data, List<Long> axes, Long keepdims) throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			INDArray y = this.executeOperator(data, axes, keepdims);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
 					y.shapeInfoToString()));

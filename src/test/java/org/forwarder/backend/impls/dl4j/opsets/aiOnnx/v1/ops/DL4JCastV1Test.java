@@ -30,11 +30,11 @@ public class DL4JCastV1Test extends DL4JTestCase {
 
 	@Test
 	public void testCastFloatToInt() throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			INDArray x0 = Nd4j.create(new float[] { 1.0123f, -1.4321f });
 			assertEquals(x0.dataType(), DataType.FLOAT);
 			DL4JCastV1 operator = new DL4JCastV1();
-			INDArray y0 = operator.cast(x0, org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.INT32 + "");
+			INDArray y0 = operator.cast(x0, operator.toOnnx4jDataType(org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.INT32 + ""));
 			assertEquals(y0.dataType(), DataType.INT);
 			assertTrue(Nd4j.create(new int[] { 1, -1 }, new long[] { 2 }, DataType.INT).equals(y0));
 			y0.close();
@@ -44,13 +44,27 @@ public class DL4JCastV1Test extends DL4JTestCase {
 
 	@Test
 	public void testCastDoubleToFloat() throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			INDArray x0 = Nd4j.create(new double[] { Double.MAX_VALUE, Double.MIN_VALUE });
 			assertEquals(x0.dataType(), DataType.DOUBLE);
 			DL4JCastV1 operator = new DL4JCastV1();
-			INDArray y0 = operator.cast(x0, org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.FLOAT + "");
+			INDArray y0 = operator.cast(x0, operator.toOnnx4jDataType(org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.FLOAT + ""));
 			assertEquals(y0.dataType(), DataType.FLOAT);
 			assertTrue(Nd4j.create(new float[] { Float.MAX_VALUE, Float.MIN_VALUE }).equals(y0));
+			y0.close();
+			x0.close();
+		}
+	}
+
+	@Test
+	public void testCastDoubleToBool() throws Exception {
+		try (DL4JSession session = new DL4JSession(null)) {
+			INDArray x0 = Nd4j.create(new double[] { Double.MAX_VALUE, 0.0d });
+			assertEquals(x0.dataType(), DataType.DOUBLE);
+			DL4JCastV1 operator = new DL4JCastV1();
+			INDArray y0 = operator.cast(x0, operator.toOnnx4jDataType(org.onnx4j.prototypes.OnnxProto3.TensorProto.DataType.BOOL + ""));
+			assertEquals(y0.dataType(), DataType.BOOL);
+			assertTrue(Nd4j.create(new boolean[] { true, false }).equals(y0));
 			y0.close();
 			x0.close();
 		}

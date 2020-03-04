@@ -21,12 +21,23 @@ import java.util.List;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.shade.guava.primitives.Longs;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ReshapeV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JReshapeV1 extends DL4JAiOnnxOperator implements ReshapeV1<INDArray> {
+public class DL4JReshapeV1 extends DL4JAiOnnxOperator implements ReshapeV1 {
 
 	@Override
-	public INDArray reshape(INDArray data, List<Long> shape, List<Long> consumedInputs) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ReshapeInputsV1<INDArray> castedOperatorInputs = new ReshapeInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		List<Long> shape = castedOperatorInputs.getShape();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new ReshapeOutputV1<INDArray>(this.reshape(data, shape, consumedInputs));
+	}
+
+	protected INDArray reshape(INDArray data, List<Long> shape, List<Long> consumedInputs) {
 		return data.reshape(Longs.toArray(shape));
 	}
 

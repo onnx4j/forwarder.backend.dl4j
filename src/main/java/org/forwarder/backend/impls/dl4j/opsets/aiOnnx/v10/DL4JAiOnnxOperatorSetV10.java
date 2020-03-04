@@ -17,10 +17,9 @@
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v10;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9.DL4JAiOnnxOperatorSetV9;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v10.AiOnnxOperatorSetSpecV10;
+import org.onnx4j.opsets.domain.aiOnnx.v10.AiOnnxOpsetInitializerV10;
 
-public class DL4JAiOnnxOperatorSetV10 extends DL4JAiOnnxOperatorSetV9 implements AiOnnxOperatorSetSpecV10<INDArray> {
+public class DL4JAiOnnxOperatorSetV10 extends DL4JAiOnnxOperatorSetV9 implements AiOnnxOpsetInitializerV10 {
 
 	public DL4JAiOnnxOperatorSetV10() {
 		super(1, "", "", 10L, "ONNX OPSET-V10 USING DL4J BACKEND");

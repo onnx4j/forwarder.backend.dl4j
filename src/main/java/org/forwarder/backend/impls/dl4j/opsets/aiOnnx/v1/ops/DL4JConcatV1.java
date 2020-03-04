@@ -16,29 +16,28 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConcatV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConcatV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JConcatV1 extends DL4JAiOnnxOperator implements ConcatV1<INDArray> {
+public class DL4JConcatV1 extends DL4JAiOnnxOperator implements ConcatV1 {
 
 	@Override
-	public INDArray concat(List<INDArray> inputs, Long axis) {
-		SameDiff sameDiff = DL4JSession.get();
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ConcatInputsV1<INDArray> castedOperatorInputs = new ConcatInputsV1<INDArray>(node, inputs);
+		List<INDArray> inputList = castedOperatorInputs.getInputs();
+		Long axis = castedOperatorInputs.getAxis();
+		return new ConcatOutputV1<INDArray>(this.concat(inputList, axis));
+	}
 
-		SDVariable[] sdInputs = new SDVariable[inputs.size()];
-		for (int n = 0; n < sdInputs.length; n++) {
-			sdInputs[n] = sameDiff.constant(inputs.get(n));
-		}
-
-		SDVariable concat = sameDiff.concat(axis.intValue(), sdInputs);
-		return sameDiff.outputSingle(Collections.<String, INDArray>emptyMap(), concat.getVarName());
+	protected INDArray concat(List<INDArray> inputs, Long axis) {
+		return Nd4j.concat(axis.intValue(), inputs.toArray(new INDArray[inputs.size()]));
 	}
 
 }

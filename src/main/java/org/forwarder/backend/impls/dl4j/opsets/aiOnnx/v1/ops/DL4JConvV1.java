@@ -16,22 +16,38 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.layers.convolution.Conv2D;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Conv2DConfig;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Conv2DConfig.Conv2DConfigBuilder;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConvV1;
+import org.nd4j.linalg.api.shape.LongShapeDescriptor;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConvV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JConvV1 extends DL4JAiOnnxOperator implements ConvV1<INDArray> {
+public class DL4JConvV1 extends DL4JAiOnnxOperator implements ConvV1 {
 
 	@Override
-	public INDArray conv(INDArray x, INDArray w, INDArray b, String autoPad, List<Long> dilations, Long group,
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ConvInputsV1<INDArray> castedOperatorInputs = new ConvInputsV1<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		INDArray b = castedOperatorInputs.getB();
+		INDArray w = castedOperatorInputs.getW();
+		String autoPad = castedOperatorInputs.getAutoPad();
+		List<Long> dilations = castedOperatorInputs.getDilations();
+		Long group = castedOperatorInputs.getGroup();
+		List<Long> kernelShape = castedOperatorInputs.getKernelShape();
+		List<Long> pads = castedOperatorInputs.getPads();
+		List<Long> strides = castedOperatorInputs.getStrides();
+		return new ConvOutputV1<INDArray>(this.conv(x, w, b, autoPad, dilations, group, kernelShape, pads, strides));
+	}
+
+	protected INDArray conv(INDArray x, INDArray w, INDArray b, String autoPad, List<Long> dilations, Long group,
 			List<Long> kernelShape, List<Long> pads, List<Long> strides) {
 		Conv2DConfigBuilder configBuilder = Conv2DConfig.builder()
 				.dataFormat(Conv2DConfig.NCHW)
@@ -46,25 +62,12 @@ public class DL4JConvV1 extends DL4JAiOnnxOperator implements ConvV1<INDArray> {
 		if (pads != null && pads.size() >= 2) {
 			configBuilder.pH(pads.get(0)).pW(pads.get(1));
 		}
-
-		SameDiff sameDiff = DL4JSession.get();
-		SDVariable conv2d;
-		if (b == null) {
-			conv2d = sameDiff.cnn.conv2d(
-					sameDiff.constant(x),
-					sameDiff.constant(this.toHWCN(w)),
-					configBuilder.build());
-		} else {
-			conv2d = sameDiff.cnn.conv2d(
-					sameDiff.constant(x),
-					sameDiff.constant(this.toHWCN(w)),
-					sameDiff.constant(b),
-					configBuilder.build());
-		}
 		
-		return sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				conv2d.getVarName());
+		Conv2D conv2d = new Conv2D(x, this.toHWCN(w), b, null, configBuilder.build());
+		LongShapeDescriptor outputShapeDesc = conv2d.calculateOutputShape().get(0);
+		INDArray out = Nd4j.create(outputShapeDesc);
+		conv2d.addOutputArgument(out);
+		return Nd4j.exec(conv2d)[0];
 	}
 
 	/**

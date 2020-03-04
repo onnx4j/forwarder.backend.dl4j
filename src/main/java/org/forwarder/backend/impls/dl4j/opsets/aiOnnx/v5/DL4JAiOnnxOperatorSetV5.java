@@ -18,21 +18,22 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v5;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v4.DL4JAiOnnxOperatorSetV4;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v5.ops.DL4JReshapeV5;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v5.AiOnnxOperatorSetSpecV5;
-import org.onnx4j.opsets.aiOnnx.v5.ops.ReshapeV5;
+import org.onnx4j.opsets.domain.aiOnnx.v5.AiOnnxOpsetInitializerV5;
+import org.onnx4j.opsets.domain.aiOnnx.v5.ops.ReshapeV5;
 
-public class DL4JAiOnnxOperatorSetV5 extends DL4JAiOnnxOperatorSetV4 implements AiOnnxOperatorSetSpecV5<INDArray> {
+public class DL4JAiOnnxOperatorSetV5 extends DL4JAiOnnxOperatorSetV4 implements AiOnnxOpsetInitializerV5 {
 
 	@Override
-	public ReshapeV5<INDArray> getReshapeV5() { return new DL4JReshapeV5(); }
+	public ReshapeV5 getReshapeV5() {
+		return new DL4JReshapeV5();
+	}
 
 	public DL4JAiOnnxOperatorSetV5() {
 		this(1, "", "", 5L, "ONNX OPSET-V5 USING DL4J BACKEND");
 	}
 
-	public DL4JAiOnnxOperatorSetV5(int irVersion, String irVersionPrerelease, String irBuildMetadata,
-			long opsetVersion, String docString) {
+	public DL4JAiOnnxOperatorSetV5(int irVersion, String irVersionPrerelease, String irBuildMetadata, long opsetVersion,
+			String docString) {
 		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
 	}
 

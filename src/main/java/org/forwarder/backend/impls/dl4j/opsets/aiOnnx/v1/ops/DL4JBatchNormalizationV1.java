@@ -16,23 +16,40 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.BatchNormalizationV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.BatchNormalizationV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JBatchNormalizationV1 extends DL4JAiOnnxOperator implements BatchNormalizationV1<INDArray> {
+public class DL4JBatchNormalizationV1 extends DL4JAiOnnxOperator implements BatchNormalizationV1 {
 
 	@Override
-	public INDArray[] batchNormalization(INDArray x, INDArray scale, INDArray b, INDArray mean, INDArray var,
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		BatchNormalizationInputsV1<INDArray> castedOperatorInputs = new BatchNormalizationInputsV1<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		INDArray scale = castedOperatorInputs.getScale();
+		INDArray b = castedOperatorInputs.getB();
+		INDArray mean = castedOperatorInputs.getMean();
+		INDArray var = castedOperatorInputs.getVar();
+		Float epsilon = castedOperatorInputs.getEpsilon();
+		Boolean isTest = castedOperatorInputs.isTest();
+		Float momentum = castedOperatorInputs.getMomentum();
+		Boolean spatial = castedOperatorInputs.isSpatial();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new BatchNormalizationOutputsV1<INDArray>(
+				this.batchNormalization(x, scale, b, mean, var, consumedInputs, epsilon, isTest, momentum, spatial));
+	}
+
+	protected INDArray batchNormalization(INDArray x, INDArray scale, INDArray b, INDArray mean, INDArray var,
 			List<Long> consumedInputs, Float epsilon, Boolean isTest, Float momentum, Boolean spatial) {
 		if (isTest) {
-			SameDiff sameDiff = DL4JSession.get();
+			return Nd4j.nn.batchNorm(x, mean, var, scale, b, epsilon, 1);
+			/*SameDiff sameDiff = DL4JSession.get();
 			SDVariable batchNorm = sameDiff.nn.batchNorm(
 					sameDiff.constant(x), 
 					sameDiff.constant(mean), 
@@ -41,10 +58,9 @@ public class DL4JBatchNormalizationV1 extends DL4JAiOnnxOperator implements Batc
 					sameDiff.constant(b), 
 					epsilon, 
 					1);
-			INDArray[] out = new INDArray[] { sameDiff.outputSingle(
+			return sameDiff.outputSingle(
 					Collections.<String, INDArray>emptyMap(), 
-					batchNorm.getVarName()) };
-			return out;
+					batchNorm.getVarName());*/
 		} else {
 			throw new UnsupportedOperationException("[DL4JBatchNormalizationV1] Unable to handle isTest=false");
 		}

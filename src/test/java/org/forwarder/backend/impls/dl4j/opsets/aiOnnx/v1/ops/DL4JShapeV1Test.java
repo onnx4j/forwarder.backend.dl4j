@@ -14,32 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9.ops;
+package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.DL4JTestCase;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-public class DL4JCastV9Test extends DL4JTestCase {
+public class DL4JShapeV1Test extends DL4JTestCase {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void testCastStringToInt() throws Exception {
+	public void testWithInt64Input() throws Exception {
+		long[] shape = new long[] { 1, 2, 3 };
+		
+		this.testShape(
+				Nd4j.create(
+					shape, 
+					new long[] { shape.length }, 
+					DataType.LONG
+				), 
+				Nd4j.create(shape)
+			);
+	}
+
+	protected void testShape(INDArray excepted, INDArray data) throws Exception {
 		try (DL4JSession session = new DL4JSession(null)) {
-			INDArray x0 = Nd4j.create(new String[] { "100.5", "-10" });
-			assertEquals(x0.dataType(), DataType.UTF8);
-			DL4JCastV9 operator = new DL4JCastV9();
-			INDArray y0 = operator.cast(x0, DataType.INT);
-			assertEquals(y0.dataType(), DataType.INT);
-			assertTrue(Nd4j.create(new int[] { 100, -10 }, new long[] { 2 }, DataType.INT).equals(y0));
-			y0.close();
-			x0.close();
+			INDArray y = this.executeOperator(data);
+			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
+					y.shapeInfoToString()));
+			assertTrue(y.equals(excepted));
 		}
+	}
+
+	protected INDArray executeOperator(INDArray data) {
+		DL4JShapeV1 operator = new DL4JShapeV1();
+		INDArray y = operator.shape(data);
+		return y;
 	}
 
 }

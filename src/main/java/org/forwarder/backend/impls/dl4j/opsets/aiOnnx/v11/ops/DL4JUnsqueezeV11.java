@@ -20,19 +20,25 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JUnsqueezeV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v11.ops.UnsqueezeV11;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.UnsqueezeV11;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
 import com.google.common.primitives.Ints;
 
-public class DL4JUnsqueezeV11 extends DL4JUnsqueezeV1 implements UnsqueezeV11<INDArray> {
+public class DL4JUnsqueezeV11 extends DL4JUnsqueezeV1 implements UnsqueezeV11 {
 
 	@Override
-	public OperatorStatus getStatus() {
-		return OperatorStatus.STABLE;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		UnsqueezeInputsV11<INDArray> castedOperatorInputs = new UnsqueezeInputsV11<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		List<Long> axes = castedOperatorInputs.getAxes();
+		return new UnsqueezeOutputV11<INDArray>(this.unsqueeze(data, axes));
 	}
 
 	@Override
-	public INDArray unsqueeze(INDArray data, List<Long> axes) {
+	protected INDArray unsqueeze(INDArray data, List<Long> axes) {
 		return this.unsqueeze(data, Ints.toArray(axes));
 	}
 

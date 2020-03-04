@@ -35,10 +35,10 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JLeakyReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMatMulV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMaxPoolV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JMulV1;
-import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JPadV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReduceMaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReluV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReshapeV1;
+import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JShapeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSigmoidV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSoftmaxV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSqueezeV1;
@@ -47,128 +47,127 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSumV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JTransposeV1;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JUnsqueezeV1;
 import org.forwarder.opset.annotations.Opset;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.AiOnnxOperatorSetSpecV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.AbsV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.AddV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ArgMaxV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.AveragePoolV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.BatchNormalizationV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.CastV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConcatV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConstantV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ConvV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.DivV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.DropoutV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.GatherV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.IdentityV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ImageScalerV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.LeakyReluV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.MatMulV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.MaxPoolV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.MulV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ReduceMaxV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ReluV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.ReshapeV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SigmoidV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SqueezeV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SubV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.TransposeV1;
-import org.onnx4j.opsets.aiOnnx.v1.ops.UnsqueezeV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.AiOnnxOpsetInitializerV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.AbsV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.AddV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ArgMaxV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.AveragePoolV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.BatchNormalizationV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.CastV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConcatV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConstantV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ConvV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.DivV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.DropoutV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.GatherV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.IdentityV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ImageScalerV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.LeakyReluV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.MatMulV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.MaxPoolV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.MulV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ReduceMaxV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ReluV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ReshapeV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ShapeV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SigmoidV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SoftmaxV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SqueezeV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SubV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.TransposeV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.UnsqueezeV1;
 
 @Opset(backendName = DL4JBackend.BACKEND_NAME)
-public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOperatorSetSpecV1<INDArray> {
+public class DL4JAiOnnxOperatorSetV1 extends DL4JAiOnnxOperatorSet implements AiOnnxOpsetInitializerV1 {
 
 	@Override
-	public AbsV1<INDArray> getAbsV1() { return new DL4JAbsV1(); }
+	public AbsV1 getAbsV1() { return new DL4JAbsV1(); }
 
 	@Override
-	public PadV1<INDArray> getPadV1() { return new DL4JPadV1(); }
+	public MatMulV1 getMatMulV1() { return new DL4JMatMulV1(); }
 
 	@Override
-	public MatMulV1<INDArray> getMatMulV1() { return new DL4JMatMulV1(); }
+	public IdentityV1 getIdentityV1() { return new DL4JIdentityV1(); }
 
 	@Override
-	public IdentityV1<INDArray> getIdentityV1() { return new DL4JIdentityV1(); }
+	public ArgMaxV1 getArgMaxV1() { return new DL4JArgMaxV1(); }
 
 	@Override
-	public ArgMaxV1<INDArray> getArgMaxV1() { return new DL4JArgMaxV1(); }
+	public DivV1 getDivV1() { return new DL4JDivV1(); }
 
 	@Override
-	public DivV1<INDArray> getDivV1() { return new DL4JDivV1(); }
+	public ReshapeV1 getReshapeV1() { return new DL4JReshapeV1(); }
 
 	@Override
-	public ReshapeV1<INDArray> getReshapeV1() { return new DL4JReshapeV1(); }
+	public AddV1 getAddV1() { return new DL4JAddV1(); }
 
 	@Override
-	public AddV1<INDArray> getAddV1() { return new DL4JAddV1(); }
+	public MaxPoolV1 getMaxPoolV1() { return new DL4JMaxPoolV1(); }
 
 	@Override
-	public MaxPoolV1<INDArray> getMaxPoolV1() { return new DL4JMaxPoolV1(); }
+	public ReluV1 getReluV1() { return new DL4JReluV1(); }
 
 	@Override
-	public ReluV1<INDArray> getReluV1() { return new DL4JReluV1(); }
+	public ConvV1 getConvV1() { return new DL4JConvV1(); }
 
 	@Override
-	public ConvV1<INDArray> getConvV1() { return new DL4JConvV1(); }
+	public ConstantV1 getConstantV1() { return new DL4JConstantV1(); }
 
 	@Override
-	public ConstantV1<INDArray> getConstantV1() { return new DL4JConstantV1(); }
+	public ImageScalerV1 getImageScalerV1() { return new DL4JImageScalerV1(); }
 
 	@Override
-	public ImageScalerV1<INDArray> getImageScalerV1() { return new DL4JImageScalerV1(); }
+	public BatchNormalizationV1 getBatchNormalizationV1() { return new DL4JBatchNormalizationV1(); }
 
 	@Override
-	public BatchNormalizationV1<INDArray> getBatchNormalizationV1() { return new DL4JBatchNormalizationV1(); }
+	public LeakyReluV1 getLeakyReluV1() { return new DL4JLeakyReluV1(); }
 
 	@Override
-	public LeakyReluV1<INDArray> getLeakyReluV1() { return new DL4JLeakyReluV1(); }
+	public ConcatV1 getConcatV1() { return new DL4JConcatV1(); }
 
 	@Override
-	public ConcatV1<INDArray> getConcatV1() { return new DL4JConcatV1(); }
+	public MulV1 getMulV1() { return new DL4JMulV1(); }
 
 	@Override
-	public MulV1<INDArray> getMulV1() { return new DL4JMulV1(); }
+	public DropoutV1 getDropoutV1() { return new DL4JDropoutV1(); }
 
 	@Override
-	public DropoutV1<INDArray> getDropoutV1() { return new DL4JDropoutV1(); }
+	public AveragePoolV1 getAveragePoolV1() { return new DL4JAveragePoolV1(); }
 
 	@Override
-	public AveragePoolV1<INDArray> getAveragePoolV1() { return new DL4JAveragePoolV1(); }
-
-	@Override
-	public CastV1<INDArray> getCastV1() { return new DL4JCastV1(); }
+	public CastV1 getCastV1() { return new DL4JCastV1(); }
 	
 	// TODO: 
 	@Override
-	public GatherV1<INDArray> getGatherV1() { return null; }
+	public GatherV1 getGatherV1() { return null; }
 	
 	@Override
-	public SubV1<INDArray> getSubV1() { return new DL4JSubV1(); }
+	public SubV1 getSubV1() { return new DL4JSubV1(); }
 	
 	@Override
-	public SumV1<INDArray> getSumV1() { return new DL4JSumV1(); }
+	public SumV1 getSumV1() { return new DL4JSumV1(); }
 	
 	@Override
-	public SigmoidV1<INDArray> getSigmoidV1() { return new DL4JSigmoidV1(); }
+	public SigmoidV1 getSigmoidV1() { return new DL4JSigmoidV1(); }
 	
 	@Override
-	public SoftmaxV1<INDArray> getSoftmaxV1() { return new DL4JSoftmaxV1(); }
+	public SoftmaxV1 getSoftmaxV1() { return new DL4JSoftmaxV1(); }
 
 	@Override
-	public SqueezeV1<INDArray> getSqueezeV1() { return new DL4JSqueezeV1(); }
+	public SqueezeV1 getSqueezeV1() { return new DL4JSqueezeV1(); }
 
 	@Override
-	public UnsqueezeV1<INDArray> getUnsqueezeV1() { return new DL4JUnsqueezeV1(); }
+	public UnsqueezeV1 getUnsqueezeV1() { return new DL4JUnsqueezeV1(); }
 
 	@Override
-	public ReduceMaxV1<INDArray> getReduceMaxV1() { return new DL4JReduceMaxV1(); }
+	public ReduceMaxV1 getReduceMaxV1() { return new DL4JReduceMaxV1(); }
 
 	@Override
-	public TransposeV1<INDArray> getTransposeV1() { return new DL4JTransposeV1(); }
+	public TransposeV1 getTransposeV1() { return new DL4JTransposeV1(); }
+
+	@Override
+	public ShapeV1 getShapeV1() { return new DL4JShapeV1(); }
 
 	public DL4JAiOnnxOperatorSetV1() {
 		this(1, "", "", 1L, "ONNX OPSET-V1 USING DL4J BACKEND");

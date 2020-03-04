@@ -16,12 +16,19 @@
  */
 package org.forwarder.backend.impls.dl4j;
 
+import java.util.UUID;
+
 import org.forwarder.Session;
-import org.forwarder.executor.Executor;
-import org.nd4j.autodiff.samediff.SameDiff;
+import org.nd4j.linalg.api.memory.MemoryWorkspace;
+import org.nd4j.linalg.api.memory.conf.WorkspaceConfiguration;
+import org.nd4j.linalg.api.memory.enums.AllocationPolicy;
+import org.nd4j.linalg.api.memory.enums.LocationPolicy;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 public class DL4JSession extends Session<INDArray> {
+	
+	public static final String ND4J_WORKSPACE_NAME_PREFIX = "forwarder-session-";
 
 	public static DL4JSession getSession() {
 		Session<?> sess = TL_SESSION.get();
@@ -35,26 +42,33 @@ public class DL4JSession extends Session<INDArray> {
 		return dl4jSess;
 	}
 
-	public static SameDiff get() {
-		DL4JSession dl4jSess = DL4JSession.getSession();
-		return dl4jSess.sameDiff;
+	private MemoryWorkspace workspace;
+
+	public DL4JSession(DL4JBackend backend) {
+		super(backend);
+		
+		this.workspace = Nd4j.getWorkspaceManager().getAndActivateWorkspace(
+				WorkspaceConfiguration
+					.builder()
+	                .initialSize(100*1024*1024)
+	                .maxSize(1024*1024*1024)
+	                .policyAllocation(AllocationPolicy.STRICT)
+	                .policyLocation(LocationPolicy.RAM)
+	                .build(),
+                ND4J_WORKSPACE_NAME_PREFIX + UUID.randomUUID());
+		this.workspace.enableDebug(backend.getModel().getConfig().isDebug());
 	}
-
-	private SameDiff sameDiff;
-
-	public DL4JSession(Executor<INDArray> executor, DL4JBackend backend) {
-		super(executor, backend);
-
-		this.sameDiff = this.createSameDiff();
+	
+	public MemoryWorkspace getMemoryWorkspace() {
+		return this.workspace;
 	}
-
-	/**
-	 * 创建后端实现Session实例
-	 * 
-	 * @return
-	 */
-	protected SameDiff createSameDiff() {
-		return SameDiff.create().enableDebugMode();
+	
+	@Override
+	public void close() throws Exception {
+		super.close();
+		workspace.destroyWorkspace();
+		workspace.close();
+		workspace = null;
 	}
 
 }

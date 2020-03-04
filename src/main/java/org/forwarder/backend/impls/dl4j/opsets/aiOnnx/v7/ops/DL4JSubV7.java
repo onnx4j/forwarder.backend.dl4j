@@ -18,12 +18,22 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops.DL4JSubV6;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v7.ops.SubV7;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v7.ops.SubV7;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSubV7 extends DL4JSubV6 implements SubV7<INDArray> {
+public class DL4JSubV7 extends DL4JSubV6 implements SubV7 {
 
 	@Override
-	public INDArray sub(INDArray a, INDArray b) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SubInputsV7<INDArray> castedOperatorInputs = new SubInputsV7<INDArray>(node, inputs);
+		INDArray a = castedOperatorInputs.getA();
+		INDArray b = castedOperatorInputs.getB();
+		return new SubOutputV7<INDArray>(this.sub(a, b));
+	}
+
+	protected INDArray sub(INDArray a, INDArray b) {
 		return a.sub(b);
 	}
 

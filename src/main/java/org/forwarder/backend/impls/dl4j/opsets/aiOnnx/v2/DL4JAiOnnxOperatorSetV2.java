@@ -17,20 +17,19 @@
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v2;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.DL4JAiOnnxOperatorSetV1;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v2.AiOnnxOperatorSetSpecV2;
+import org.onnx4j.opsets.domain.aiOnnx.v2.AiOnnxOpsetInitializerV2;
 
-public class DL4JAiOnnxOperatorSetV2 extends DL4JAiOnnxOperatorSetV1 implements AiOnnxOperatorSetSpecV2<INDArray> {
+public class DL4JAiOnnxOperatorSetV2 extends DL4JAiOnnxOperatorSetV1 implements AiOnnxOpsetInitializerV2 {
 
-	//@Override
-	//public PadV2<INDArray> getPadV2() { return new DL4JPadV2(); }
+	// @Override
+	// public PadV2<INDArray> getPadV2() { return new DL4JPadV2(); }
 
 	public DL4JAiOnnxOperatorSetV2() {
 		this(1, "", "", 2L, "ONNX OPSET-V2 USING DL4J BACKEND");
 	}
 
-	public DL4JAiOnnxOperatorSetV2(int irVersion, String irVersionPrerelease, String irBuildMetadata,
-			long opsetVersion, String docString) {
+	public DL4JAiOnnxOperatorSetV2(int irVersion, String irVersionPrerelease, String irBuildMetadata, long opsetVersion,
+			String docString) {
 		super(irVersion, irVersionPrerelease, irBuildMetadata, opsetVersion, docString);
 	}
 

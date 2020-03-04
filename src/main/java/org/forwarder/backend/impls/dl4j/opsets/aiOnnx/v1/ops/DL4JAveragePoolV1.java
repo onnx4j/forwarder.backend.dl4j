@@ -16,25 +16,34 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.layers.convolution.AvgPooling2D;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.Pooling2D.Pooling2DType;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Pooling2DConfig;
-import org.onnx4j.opsets.aiOnnx.v1.ops.AveragePoolV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.AveragePoolV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JAveragePoolV1 extends DL4JAiOnnxOperator implements AveragePoolV1<INDArray> {
+public class DL4JAveragePoolV1 extends DL4JAiOnnxOperator implements AveragePoolV1 {
 
 	@Override
-	public INDArray averagePool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		AveragePoolInputsV1<INDArray> castedOperatorInputs = new AveragePoolInputsV1<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		String autoPad = castedOperatorInputs.getAutoPad();
+		List<Long> kernelShape = castedOperatorInputs.getKernelShape();
+		List<Long> pads = castedOperatorInputs.getPads();
+		List<Long> strides = castedOperatorInputs.getStrides();
+		return new AveragePoolOutputV1<INDArray>(this.averagePool(x, autoPad, kernelShape, pads, strides));
+	}
+
+	protected INDArray averagePool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
 			List<Long> strides) {
-		SameDiff sameDiff = DL4JSession.get();
-		
 		Pooling2DConfig pooling2DConfig = Pooling2DConfig.builder()
 				.isNHWC(false)
 				.sH(strides.get(0))
@@ -44,12 +53,8 @@ public class DL4JAveragePoolV1 extends DL4JAiOnnxOperator implements AveragePool
 				.type(Pooling2DType.MAX)
 				.isSameMode(autoPad.startsWith("SAME") ? true : false)
 				.build();
-		
-		SDVariable avgPooling2d = sameDiff.cnn.avgPooling2d(sameDiff.constant(data), pooling2DConfig);
-		
-		return sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				avgPooling2d.getVarName());
+		AvgPooling2D avgPooling2d = new AvgPooling2D(data, null, pooling2DConfig);
+		return Nd4j.exec(avgPooling2d)[0];
 	}
 
 }

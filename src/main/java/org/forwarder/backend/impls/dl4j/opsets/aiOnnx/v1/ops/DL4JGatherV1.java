@@ -20,22 +20,39 @@ import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.onnx4j.Inputs;
 import org.onnx4j.model.graph.Node;
-import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ArgMaxV1;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.GatherV1;
 import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JArgMaxV1 extends DL4JAiOnnxOperator implements ArgMaxV1 {
+public class DL4JGatherV1 extends DL4JAiOnnxOperator implements GatherV1 {
 
 	@Override
 	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
-		ArgMaxInputsV1<INDArray> castedOperatorInputs = new ArgMaxInputsV1<INDArray>(node, inputs);
+		GatherInputsV1<INDArray> castedOperatorInputs = new GatherInputsV1<INDArray>(node, inputs);
 		INDArray data = castedOperatorInputs.getData();
+		INDArray indices = castedOperatorInputs.getIndices();
 		Long axis = castedOperatorInputs.getAxis();
-		Long keepdims = castedOperatorInputs.getKeepdims();
-		return new ArgMaxOutputV1<INDArray>(this.argmax(data, axis, keepdims));
+		return new GatherOutputV1<INDArray>(this.gather(data, indices, axis));
 	}
 
-	protected INDArray argmax(INDArray x0, Long axis, Long keepdims) {
-		return x0.argMax(axis.intValue());
-	}
+	protected INDArray gather(INDArray data, INDArray indices, Long axis) {
+		throw new UnsupportedOperationException();
+		/*SameDiff sameDiff = DL4JSession.get();
+		SDVariable sdData = sameDiff.constant(data);
+		SDVariable[] gathers = new SDVariable[indices.rows()];
+		for (int q = 0; q < gathers.length; q++) {
+			INDArray indicesQ = indices.getRow(q, false);
+			long indicesQLength = indicesQ.shape()[indicesQ.shape().length - 1];
+			indicesQ = indicesQ.reshape(indicesQLength);
+			gathers[q] = sameDiff.gather(sdData, sameDiff.constant(indicesQ), axis.intValue());
+		}
+
+		// if (gathers.length > 1) {
+		SDVariable concat = sameDiff.stack(0, gathers);
+		return sameDiff.outputSingle(Collections.<String, INDArray> emptyMap(), concat.getVarName());
+		// } else {
+		// return sameDiff.outputSingle(Collections.<String,
+		// INDArray>emptyMap(), gathers[0].getVarName());
+		// }
+*/	}
 
 }

@@ -16,24 +16,26 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
-
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SoftmaxV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SoftmaxV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSoftmaxV1 extends DL4JAiOnnxOperator implements SoftmaxV1<INDArray> {
+public class DL4JSoftmaxV1 extends DL4JAiOnnxOperator implements SoftmaxV1 {
 
 	@Override
-	public INDArray softmax(INDArray input, Long axis) {
-		SameDiff sameDiff = DL4JSession.get();
-		SDVariable softmax = sameDiff.nn.softmax(sameDiff.constant(input), axis.intValue());
-		return sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				softmax.getVarName());
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SoftmaxInputsV1<INDArray> castedOperatorInputs = new SoftmaxInputsV1<INDArray>(node, inputs);
+		INDArray input = castedOperatorInputs.getInput();
+		Long axis = castedOperatorInputs.getAxis();
+		return new SoftmaxOutputV1<INDArray>(this.softmax(input, axis));
 	}
-	
+
+	protected INDArray softmax(INDArray input, Long axis) {
+		return Nd4j.nn.softmax(input, axis.intValue());
+	}
+
 }

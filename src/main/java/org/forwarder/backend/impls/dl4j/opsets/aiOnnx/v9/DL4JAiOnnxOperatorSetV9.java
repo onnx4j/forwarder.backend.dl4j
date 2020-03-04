@@ -18,11 +18,10 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8.DL4JAiOnnxOperatorSetV8;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v9.ops.DL4JCastV9;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v9.AiOnnxOperatorSetSpecV9;
-import org.onnx4j.opsets.aiOnnx.v9.ops.CastV9;
+import org.onnx4j.opsets.domain.aiOnnx.v9.AiOnnxOpsetInitializerV9;
+import org.onnx4j.opsets.domain.aiOnnx.v9.ops.CastV9;
 
-public class DL4JAiOnnxOperatorSetV9 extends DL4JAiOnnxOperatorSetV8 implements AiOnnxOperatorSetSpecV9<INDArray> {
+public class DL4JAiOnnxOperatorSetV9 extends DL4JAiOnnxOperatorSetV8 implements AiOnnxOpsetInitializerV9 {
 
 	public DL4JAiOnnxOperatorSetV9() {
 		super(1, "", "", 9L, "ONNX OPSET-V9 USING DL4J BACKEND");
@@ -34,6 +33,6 @@ public class DL4JAiOnnxOperatorSetV9 extends DL4JAiOnnxOperatorSetV8 implements 
 	}
 
 	@Override
-	public CastV9<INDArray> getCastV9() { return new DL4JCastV9(); }
+	public CastV9 getCastV9() { return new DL4JCastV9(); }
 
 }

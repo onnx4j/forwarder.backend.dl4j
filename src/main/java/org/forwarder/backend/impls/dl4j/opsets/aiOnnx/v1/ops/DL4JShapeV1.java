@@ -18,14 +18,23 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.PadV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.ShapeV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JPadV1 extends DL4JAiOnnxOperator implements PadV1<INDArray> {
+public class DL4JShapeV1 extends DL4JAiOnnxOperator implements ShapeV1 {
 
 	@Override
-	public INDArray pad(INDArray x0) {
-		// TODO Auto-generated method stub
-		return null;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ShapeInputsV1<INDArray> castedOperatorInputs = new ShapeInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		return new ShapeOutputV1<INDArray>(this.shape(data));
+	}
+
+	protected INDArray shape(INDArray data) {
+		return Nd4j.create(data.shapeInfoDataBuffer(), data.shape());
 	}
 
 }

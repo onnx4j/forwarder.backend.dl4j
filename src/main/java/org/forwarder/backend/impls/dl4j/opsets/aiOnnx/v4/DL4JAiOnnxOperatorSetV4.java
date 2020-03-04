@@ -18,14 +18,13 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v4;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v2.DL4JAiOnnxOperatorSetV2;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v4.ops.DL4JConcatV4;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v4.AiOnnxOperatorSetSpecV4;
-import org.onnx4j.opsets.aiOnnx.v4.ops.ConcatV4;
+import org.onnx4j.opsets.domain.aiOnnx.v4.AiOnnxOpsetInitializerV4;
+import org.onnx4j.opsets.domain.aiOnnx.v4.ops.ConcatV4;
 
-public class DL4JAiOnnxOperatorSetV4 extends DL4JAiOnnxOperatorSetV2 implements AiOnnxOperatorSetSpecV4<INDArray> {
+public class DL4JAiOnnxOperatorSetV4 extends DL4JAiOnnxOperatorSetV2 implements AiOnnxOpsetInitializerV4 {
 
 	@Override
-	public ConcatV4<INDArray> getConcatV4() { return new DL4JConcatV4(); }
+	public ConcatV4 getConcatV4() { return new DL4JConcatV4(); }
 
 	public DL4JAiOnnxOperatorSetV4() {
 		this(1, "", "", 4L, "ONNX OPSET-V4 USING TENSORFLOW BACKEND");

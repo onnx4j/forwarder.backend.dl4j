@@ -17,30 +17,32 @@
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.UnsqueezeV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.UnsqueezeV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
 import com.google.common.primitives.Ints;
 
-public class DL4JUnsqueezeV1 extends DL4JAiOnnxOperator implements UnsqueezeV1<INDArray> {
+public class DL4JUnsqueezeV1 extends DL4JAiOnnxOperator implements UnsqueezeV1 {
 
 	@Override
-	public OperatorStatus getStatus() {
-		return OperatorStatus.STABLE;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		UnsqueezeInputsV1<INDArray> castedOperatorInputs = new UnsqueezeInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		List<Long> axes = castedOperatorInputs.getAxes();
+		return new UnsqueezeOutputV1<INDArray>(this.unsqueeze(data, axes));
 	}
 
-	@Override
-	public INDArray unsqueeze(INDArray data, List<Long> axes) {
+	protected INDArray unsqueeze(INDArray data, List<Long> axes) {
 		return this.unsqueeze(data, Ints.toArray(axes));
 	}
-	
+
 	protected INDArray unsqueeze(INDArray data, int[] axes) {
 		//
 		// axes集合必须符合从小到大（升序）排列
@@ -49,17 +51,15 @@ public class DL4JUnsqueezeV1 extends DL4JAiOnnxOperator implements UnsqueezeV1<I
 
 		int maxAxis = data.rank() + axes.length;
 
-		SameDiff sameDiff = DL4JSession.get();
-		SDVariable intermediate = sameDiff.constant(data);
+		INDArray intermediate = data;
 		for (int axis : axes) {
 			if (axis >= maxAxis)
 				throw new IllegalArgumentException(
 						String.format("The max axis value is %s, but the value of passed is %s.", maxAxis, axis));
 
-			intermediate = sameDiff.expandDims(intermediate, axis);
+			intermediate = Nd4j.expandDims(intermediate, axis);
 		}
-
-		return sameDiff.outputSingle(Collections.<String, INDArray>emptyMap(), intermediate.getVarName());
+		return intermediate;
 	}
 
 }

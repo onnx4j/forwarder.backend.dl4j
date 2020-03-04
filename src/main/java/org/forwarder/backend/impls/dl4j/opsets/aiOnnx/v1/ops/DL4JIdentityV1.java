@@ -19,14 +19,23 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.activations.impl.ActivationIdentity;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.IdentityV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.IdentityV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JIdentityV1 extends DL4JAiOnnxOperator implements IdentityV1<INDArray> {
-	
+public class DL4JIdentityV1 extends DL4JAiOnnxOperator implements IdentityV1 {
+
 	private ActivationIdentity identity = new ActivationIdentity();
 
 	@Override
-	public INDArray identity(INDArray x0) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		IdentityInputsV1<INDArray> castedOperatorInputs = new IdentityInputsV1<INDArray>(node, inputs);
+		INDArray input = castedOperatorInputs.getInput();
+		return new IdentityOutputV1<INDArray>(this.identity(input));
+	}
+
+	protected INDArray identity(INDArray x0) {
 		// TODO Auto-generated method stub
 		return identity.getActivation(x0, false);
 	}

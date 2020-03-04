@@ -18,12 +18,21 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JSigmoidV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v6.ops.SigmoidV6;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v6.ops.SigmoidV6;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSigmoidV6 extends DL4JSigmoidV1 implements SigmoidV6<INDArray> {
+public class DL4JSigmoidV6 extends DL4JSigmoidV1 implements SigmoidV6 {
 
 	@Override
-	public INDArray sigmoid(INDArray x) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SigmoidInputsV6<INDArray> castedOperatorInputs = new SigmoidInputsV6<INDArray>(node, inputs);
+		INDArray x = castedOperatorInputs.getX();
+		return new SigmoidOutputV6<INDArray>(this.sigmoid(x));
+	}
+
+	protected INDArray sigmoid(INDArray x) {
 		return super.sigmoid(x, null);
 	}
 	

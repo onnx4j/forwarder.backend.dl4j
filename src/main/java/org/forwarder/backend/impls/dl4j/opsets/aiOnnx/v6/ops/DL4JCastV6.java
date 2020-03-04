@@ -18,22 +18,27 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v6.ops;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JCastV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v6.ops.CastV6;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v6.ops.CastV6;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JCastV6 extends DL4JCastV1 implements CastV6<INDArray> {
+public class DL4JCastV6 extends DL4JCastV1 implements CastV6 {
 
 	@Override
-	public INDArray cast(INDArray t1, Long to) {
-		org.onnx4j.tensor.DataType onnx4jDataType = org.onnx4j.tensor.DataType.from(to.intValue());
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		CastInputV6<INDArray> castedOperatorInputs = new CastInputV6<INDArray>(node, inputs);
+		INDArray input = castedOperatorInputs.getInput();
+		Long to = castedOperatorInputs.getToDTNumber();
+		return new CastOutputV6<INDArray>(super.cast(input, this.toOnnx4jDataType(to)));
+	}
+	
+	protected org.onnx4j.tensor.DataType toOnnx4jDataType(Long onnx4jDataTypeIndex) {
+		org.onnx4j.tensor.DataType onnx4jDataType = org.onnx4j.tensor.DataType.from(onnx4jDataTypeIndex.intValue());
 		if (onnx4jDataType == null)
-			throw new UnsupportedOperationException(String.format("Unsupported datatype id \"%s\" in ONNX4J", to));
-
-		org.nd4j.linalg.api.buffer.DataType toDL4JDataType = DT_MAP.get(onnx4jDataType);
-		if (toDL4JDataType == null)
-			throw new UnsupportedOperationException(
-					String.format("Can not convert datatype from \"%s\"(DL4J) to \"%s\"(ONN4J)", t1.dataType(), to));
-
-		return super.cast(t1, toDL4JDataType);
+			throw new UnsupportedOperationException(String.format("Unsupported datatype index \"%s\" in ONNX4J", onnx4jDataTypeIndex));
+		else
+			return onnx4jDataType;
 	}
 
 }

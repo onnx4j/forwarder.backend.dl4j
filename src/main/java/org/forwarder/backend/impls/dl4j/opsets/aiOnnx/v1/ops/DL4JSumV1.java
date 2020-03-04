@@ -20,17 +20,27 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.SumV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JSumV1 extends DL4JAiOnnxOperator implements SumV1<INDArray> {
+public class DL4JSumV1 extends DL4JAiOnnxOperator implements SumV1 {
 
 	@Override
-	public INDArray sum(List<INDArray> dataList, List<Long> consumedInputs) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		SumInputsV1<INDArray> castedOperatorInputs = new SumInputsV1<INDArray>(node, inputs);
+		List<INDArray> inputList = castedOperatorInputs.getInputs();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new SumOutputV1<INDArray>(this.sum(inputList, consumedInputs));
+	}
+
+	protected INDArray sum(List<INDArray> dataList, List<Long> consumedInputs) {
 		INDArray result = dataList.get(0);
 		for (int n = 1; n < dataList.size(); n++) {
 			result = result.add(dataList.get(n));
 		}
 		return result;
 	}
-	
+
 }

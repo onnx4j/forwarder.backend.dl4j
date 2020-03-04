@@ -194,7 +194,7 @@ public class DL4JSubV7Test extends DL4JTestCase {
 	}
 
 	private void testSub(INDArray excepted, INDArray a, INDArray b) throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			DL4JSubV7 operator = new DL4JSubV7();
 			INDArray y = operator.sub(a, b);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),

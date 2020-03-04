@@ -18,14 +18,13 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v7.DL4JAiOnnxOperatorSetV7;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v8.ops.DL4JSumV8;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v8.AiOnnxOperatorSetSpecV8;
-import org.onnx4j.opsets.aiOnnx.v8.ops.SumV8;
+import org.onnx4j.opsets.domain.aiOnnx.v8.AiOnnxOpsetInitializerV8;
+import org.onnx4j.opsets.domain.aiOnnx.v8.ops.SumV8;
 
-public class DL4JAiOnnxOperatorSetV8 extends DL4JAiOnnxOperatorSetV7 implements AiOnnxOperatorSetSpecV8<INDArray> {
+public class DL4JAiOnnxOperatorSetV8 extends DL4JAiOnnxOperatorSetV7 implements AiOnnxOpsetInitializerV8 {
 
 	@Override
-	public SumV8<INDArray> getSumV8() { return new DL4JSumV8(); }
+	public SumV8 getSumV8() { return new DL4JSumV8(); }
 
 	public DL4JAiOnnxOperatorSetV8() {
 		super(1, "", "", 8L, "ONNX OPSET-V8 USING DL4J BACKEND");

@@ -16,34 +16,37 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v1.ops.DropoutV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.DropoutV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JDropoutV1 extends DL4JAiOnnxOperator implements DropoutV1<INDArray> {
+public class DL4JDropoutV1 extends DL4JAiOnnxOperator implements DropoutV1 {
 
 	@Override
-	public List<INDArray> dropout(INDArray data, Boolean isTest, Float ratio, List<Long> consumedInputs) {
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		DropoutInputsV1<INDArray> castedOperatorInputs = new DropoutInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		Boolean isTest = castedOperatorInputs.isTest();
+		Float ratio = castedOperatorInputs.getRatio();
+		List<Long> consumedInputs = castedOperatorInputs.getConsumedInputs();
+		return new DropoutOutputV1<INDArray>(this.dropout(data, isTest, ratio, consumedInputs));
+	}
+
+	protected INDArray dropout(INDArray data, Boolean isTest, Float ratio, List<Long> consumedInputs) {
 		//
 		// if isTest is true, run dropout in test mode where the output is
 		// simply Y = X
 		//
 		if (isTest)
-			return this.wrapMultiOutputs(Optional.of(data), Optional.empty());
+			return data;
 		else {
-			SameDiff sameDiff = DL4JSession.get();
-			SDVariable sdDropout = sameDiff.nn.dropout(sameDiff.constant(data), ratio);
-			return this.wrapMultiOutputs(
-					Optional.of(
-							sameDiff.outputSingle(Collections.<String, INDArray>emptyMap(), sdDropout.getVarName())),
-					Optional.empty());
+			return Nd4j.nn.dropout(data, ratio);
 		}
 	}
 

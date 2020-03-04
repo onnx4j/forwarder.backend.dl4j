@@ -18,7 +18,7 @@ package org.forwarder.backend.impls.dl4j.opsets.aiOnnxMl;
 
 import org.forwarder.backend.impls.dl4j.DL4JBackend;
 import org.forwarder.opset.annotations.Opset;
-import org.onnx4j.opsets.aiOnnxMl.AiOnnxMlOperatorSet;
+import org.onnx4j.opsets.domain.AiOnnxMlOperatorSet;
 
 @Opset(backendName = DL4JBackend.BACKEND_NAME)
 public abstract class DL4JAiOnnxMlOperatorSet extends AiOnnxMlOperatorSet {

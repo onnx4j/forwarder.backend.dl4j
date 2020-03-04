@@ -46,7 +46,7 @@ public class DL4JTransposeV1Test extends DL4JTestCase {
 	}
 
 	protected void testTranspose(INDArray excepted, INDArray data, List<Long> perm) throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			INDArray y = this.executeOperator(data, perm);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
 					y.shapeInfoToString()));

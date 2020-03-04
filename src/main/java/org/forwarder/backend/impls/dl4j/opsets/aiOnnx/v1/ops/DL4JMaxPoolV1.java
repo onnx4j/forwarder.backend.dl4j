@@ -16,26 +16,37 @@
  */
 package org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.forwarder.backend.impls.dl4j.DL4JSession;
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.DL4JAiOnnxOperator;
-import org.nd4j.autodiff.samediff.SDVariable;
-import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.layers.convolution.MaxPooling2D;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.Pooling2D.Pooling2DType;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Pooling2DConfig;
-import org.onnx4j.opsets.aiOnnx.v1.ops.MaxPoolV1;
+import org.nd4j.linalg.factory.Nd4j;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v1.ops.MaxPoolV1;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JMaxPoolV1 extends DL4JAiOnnxOperator implements MaxPoolV1<INDArray> {
+public class DL4JMaxPoolV1 extends DL4JAiOnnxOperator implements MaxPoolV1 {
 
 	@Override
-	public INDArray maxpool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		MaxPoolInputsV1<INDArray> castedOperatorInputs = new MaxPoolInputsV1<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		String autoPad = castedOperatorInputs.getAutoPad();
+		List<Long> kernelShape = castedOperatorInputs.getKernelShape();
+		List<Long> pads = castedOperatorInputs.getPads();
+		List<Long> strides = castedOperatorInputs.getStrides();
+		return new MaxPoolOutputV1<INDArray>(this.maxpool(data, autoPad, kernelShape, pads, strides));
+	}
+
+	protected INDArray maxpool(INDArray data, String autoPad, List<Long> kernelShape, List<Long> pads,
 			List<Long> strides) {
-		SameDiff sameDiff = DL4JSession.get();
-		
-		Pooling2DConfig pooling2DConfig = Pooling2DConfig.builder()
+
+		Pooling2DConfig pooling2DConfig = Pooling2DConfig
+				.builder()
 				.isNHWC(false)
 				.sH(strides.get(0))
 				.sW(strides.get(1))
@@ -44,12 +55,9 @@ public class DL4JMaxPoolV1 extends DL4JAiOnnxOperator implements MaxPoolV1<INDAr
 				.type(Pooling2DType.MAX)
 				.isSameMode(autoPad.startsWith("SAME") ? true : false)
 				.build();
-		
-		SDVariable maxPooling2d = sameDiff.cnn.maxPooling2d(sameDiff.constant(data), pooling2DConfig);
-		
-		return sameDiff.outputSingle(
-				Collections.<String, INDArray>emptyMap(), 
-				maxPooling2d.getVarName());
+
+		MaxPooling2D maxPooling2d = new MaxPooling2D(data, null, pooling2DConfig);
+		return Nd4j.exec(maxPooling2d)[0];
 	}
 
 }

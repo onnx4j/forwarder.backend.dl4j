@@ -19,13 +19,13 @@ package org.forwarder.backend.impls.dl4j;
 import java.util.Arrays;
 
 import org.forwarder.Backend;
+import org.forwarder.Model;
 import org.forwarder.Session;
-import org.forwarder.executor.Executor;
+import org.forwarder.backend.impls.dl4j.utils.DL4JDataTypeHelper;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-import org.onnx4j.Model;
 import org.onnx4j.Tensor;
 import org.onnx4j.TensorManager;
 import org.onnx4j.tensor.Shape;
@@ -39,8 +39,8 @@ public class DL4JBackend extends Backend<INDArray> {
 		super();
 	}
 
-	public DL4JBackend(Model model, Executor<INDArray> executor) {
-		super(model, executor);
+	public DL4JBackend(Model model) {
+		super(model);
 	}
 
 	@Override
@@ -50,81 +50,44 @@ public class DL4JBackend extends Backend<INDArray> {
 
 	@Override
 	public void disposeBackendTensor(INDArray backendTensor) {
-		if (backendTensor.closeable())
-			backendTensor.close();
+		backendTensor.close();
 	}
 
 	@Override
-	public INDArray toBackendTensor(TensorManager<INDArray> tensorManager, org.onnx4j.Tensor rawTensor) {
-		DataBuffer dataBuffer = null;
-		switch (rawTensor.getDataType()) {
-		case UINT8:
-		case UINT16:
-		case UINT32:
-		case INT8:
-		case INT16:
-		case INT32:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.INT, (int) rawTensor.getElementSize());
-			break;
-		case UINT64:
-		case INT64:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.LONG, (int) rawTensor.getElementSize());
-			break;
-		case FLOAT16:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.HALF, (int) rawTensor.getElementSize());
-			break;
-		case FLOAT:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.FLOAT, (int) rawTensor.getElementSize());
-			break;
-		case DOUBLE:
-			dataBuffer = Nd4j.createBuffer(rawTensor.getData(), DataType.DOUBLE, (int) rawTensor.getElementSize());
-			break;
-		default:
-			throw new UnsupportedOperationException(
-					String.format("DataType \"%s\" not be supported in ND4J", rawTensor.getDataType()));
-		}
-
-		int shape[] = Arrays.stream(rawTensor.getShape()).mapToInt(i -> (int) i).toArray();
+	public INDArray toBackendTensor(TensorManager<INDArray> tensorManager, org.onnx4j.Tensor onnx4jTensor) {
+		DataType backendDataType = DL4JDataTypeHelper.toDl4jDataType(onnx4jTensor.getDataType());
+		DataBuffer dataBuffer = Nd4j.createBuffer(onnx4jTensor.getData(), backendDataType, (int) onnx4jTensor.getElementSize());
+		int shape[] = Arrays.stream(onnx4jTensor.getShape()).mapToInt(i -> (int) i).toArray();
 		INDArray ndArray = Nd4j.create(dataBuffer, shape);
-		tensorManager.attach(rawTensor.getName(), ndArray);
+		
+		//
+		// Attach to Onnx4j.TensorManager if the backend tensor had not been attached.
+		//
+		if (ndArray.isAttached() == false)
+			tensorManager.attach(onnx4jTensor.getName(), ndArray);
+		
 		return ndArray;
 	}
 
 	@Override
 	public org.onnx4j.Tensor toNativeTensor(TensorManager<Tensor> tensorManager, String name, INDArray backendTensor) {
-		org.onnx4j.tensor.DataType nativeDataType = null;
-		switch (backendTensor.data().dataType()) {
-		case INT:
-			nativeDataType = org.onnx4j.tensor.DataType.INT32;
-			break;
-		case LONG:
-			nativeDataType = org.onnx4j.tensor.DataType.INT64;
-			break;
-		case HALF:
-			nativeDataType = org.onnx4j.tensor.DataType.FLOAT16;
-			break;
-		case FLOAT:
-			nativeDataType = org.onnx4j.tensor.DataType.FLOAT;
-			break;
-		case DOUBLE:
-			nativeDataType = org.onnx4j.tensor.DataType.DOUBLE;
-			break;
-		default:
-			throw new UnsupportedOperationException(
-					String.format("DataType \"%s\" not be supported in ONNX4J", backendTensor.data().dataType()));
-		}
-
-		return TensorBuilder
-				.builder(nativeDataType, Shape.create(backendTensor.shape()), backendTensor.data().asNio())
+		org.onnx4j.tensor.DataType onnx4jDataType = DL4JDataTypeHelper.toOnnx4jDataType(backendTensor.data().dataType());
+		TensorBuilder builder = TensorBuilder
+				.builder(onnx4jDataType, Shape.create(backendTensor.shape()), backendTensor.data().asNio())
 				.name(name)
-				.docString("Created from org.nd4j.linalg.api.ndarray.INDArray in DL4JBackend.toTensor()")
-				.manager(tensorManager)
-				.build();
+				.docString("Created from org.nd4j.linalg.api.ndarray.INDArray in DL4JBackend.toTensor()");
+		//
+		// Attach to Onnx4j.TensorManager if the backend tensor had not been attached.
+		//
+		if (backendTensor.isAttached() == false)
+			builder.manager(tensorManager);
+		
+		return builder.build();
 	}
 
 	@Override
 	public Session<INDArray> newSession() {
-		return new DL4JSession(super.getExecutor(), this);
+		return new DL4JSession(this);
 	}
 
 }

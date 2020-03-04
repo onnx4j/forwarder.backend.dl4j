@@ -81,7 +81,7 @@ public class DL4JSqueezeV1Test extends DL4JTestCase {
 	}
 
 	protected void testSqueeze(INDArray excepted, INDArray data, List<Long> axes) throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			INDArray y = this.executeOperator(data, axes);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),
 					y.shapeInfoToString()));

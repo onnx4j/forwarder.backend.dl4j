@@ -226,7 +226,7 @@ public class DL4JSumV8Test extends DL4JTestCase {
 	}
 
 	private void testSum(INDArray excepted, List<INDArray> dataList) throws Exception {
-		try (DL4JSession session = new DL4JSession(null, null)) {
+		try (DL4JSession session = new DL4JSession(null)) {
 			DL4JSumV8 operator = new DL4JSumV8();
 			INDArray y = operator.sum(dataList);
 			System.out.println(String.format("{Excepted: %s} - {Actual: %s}", excepted.shapeInfoToString(),

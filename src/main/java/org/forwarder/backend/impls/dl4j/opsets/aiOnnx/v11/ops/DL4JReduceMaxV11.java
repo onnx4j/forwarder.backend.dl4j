@@ -20,17 +20,24 @@ import java.util.List;
 
 import org.forwarder.backend.impls.dl4j.opsets.aiOnnx.v1.ops.DL4JReduceMaxV1;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.onnx4j.opsets.aiOnnx.v11.ops.ReduceMaxV11;
+import org.onnx4j.Inputs;
+import org.onnx4j.model.graph.Node;
+import org.onnx4j.opsets.domain.aiOnnx.v11.ops.ReduceMaxV11;
+import org.onnx4j.opsets.operator.OperatorOutputs;
 
-public class DL4JReduceMaxV11 extends DL4JReduceMaxV1 implements ReduceMaxV11<INDArray> {
+public class DL4JReduceMaxV11 extends DL4JReduceMaxV1 implements ReduceMaxV11 {
 
 	@Override
-	public OperatorStatus getStatus() {
-		return OperatorStatus.STABLE;
+	public OperatorOutputs<INDArray> forward(Node node, Inputs inputs) {
+		ReduceMaxInputsV11<INDArray> castedOperatorInputs = new ReduceMaxInputsV11<INDArray>(node, inputs);
+		INDArray data = castedOperatorInputs.getData();
+		List<Long> axes = castedOperatorInputs.getAxes();
+		Long keepdims = castedOperatorInputs.getKeepdims();
+		return new ReduceMaxOutputV11<INDArray>(this.reduceMax(data, axes, keepdims));
 	}
 
 	@Override
-	public INDArray reduceMax(INDArray data, List<Long> axes, Long keepdims) {
+	protected INDArray reduceMax(INDArray data, List<Long> axes, Long keepdims) {
 		return super.reduceMax(data, axes, keepdims);
 	}
 
