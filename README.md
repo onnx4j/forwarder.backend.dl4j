@@ -92,16 +92,15 @@ try (Backend<?> backend = this.model.backend(backendName)) {
 ```
 
 * GPU支持
-Nd4j利用CUDA进行GPU计算加速，开发者需自行配置好CUDA与CuDNN，并根据CUDA的版本依赖对应的Nd4j-CUDA包。
-
-以下以CUDA 10.0与CuDNN 7.5为例：
 ```
 <dependency>
     <groupId>org.nd4j</groupId>
-    <artifactId>nd4j-cuda-10.2</artifactId>
+    <artifactId>nd4j-cuda-10.0</artifactId>
 </dependency>
 ```
- 
+
+> Nd4j利用CUDA进行GPU计算加速，开发者需自行配置好CUDA与CuDNN，并根据CUDA的版本依赖对应的Nd4j-CUDA包。上述例子假设系统中配置的CUDA版本为10.0。
+
 ## Operator支持
 ### ai.onnx Operators
 |Operator|Opset1|Opset2|Opset3|Opset4|Opset5|Opset6|Opset7|Opset8|Opset9|Opset10|Opset11|Opset12|
