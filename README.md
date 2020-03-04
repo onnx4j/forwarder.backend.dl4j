@@ -1,6 +1,66 @@
 # forwarder.backend.dl4j
 ## 简介
-A backend for Forwarder using Deeplearning4j.
+该项目是[Forwarder](https://github.com/onnx4j/forwarder)的Backend项目，其基于Deeplearning4j（Nd4j）实现所有ONNX的Operator的运算。用户若希望使用基于Nd4j完成forward/inference操作，可依赖此项目。
+
+## 使用
+### 运行要求
+* Linux/MacOS/Windows
+* Maven
+* Oracle JRE 1.8
+* 符合ONNX规范的模型文件（当前最高支持v9的指令集）
+> 注意：对于操作系统与JRE的要求视Nd4j的支持而定。
+
+### 快速开始
+* 导入Maven依赖包
+```
+<dependency>
+  <groupId>org</groupId>
+  <artifactId>forwarder.backend.dl4j</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+> 备注：由于forwarder.backend.dl4j项目还没有上传至Maven中心仓库，请开发者先自行浏览我们的github，checkout所有必须的项目。
+* 样例模型
+!(https://note.youdao.com/yws/public/resource/e33510290e3b080c9bf6943af8f827b1/xmlnote/865AE62D9E564FD1BA4616BFC9B35339/19320)
+* 加载与执行ONNX模型
+```
+String modelPath = "./model.onnx";
+Model model = Forwarder.load(modelPath, 
+				Config
+        .builder()
+        .setDebug(true)
+        // 内存存储顺序
+        .setMemoryByteOrder(ByteOrder.LITTLE_ENDIAN)
+        // 使用off-heap内存
+        .setMemoryAllocationMode(AllocationMode.DIRECT)
+        // RecursionExecutor.class:递归式图遍历执行器，RayExecutor:非递归式图遍历执行器
+        .setExecutor(RecursionExecutor.class)
+        .build()
+				);
+
+try (Backend<?> backend = this.model.backend(backendName)) {
+  Tensor x2_0;
+  Tensor y0;
+  try (Session<?> session = backend.newSession()) {
+        x2_0 = TensorBuilder
+            .builder(
+               DataType.FLOAT, 
+               Shape.create(2L, 1L), 
+               Tensor.options()
+            )
+            .name("x2:0")
+            .putFloat(3f)
+            .putFloat(2f)
+            .build();
+        y0 = session.feed(x2_0).forward().getOutput("y:0");
+
+        //
+        // Dump outputs data
+        //
+        logger.debug("Output: {}", y0.toString());
+    }
+}
+```
  
 ## Operator支持
 ### ai.onnx Operators
