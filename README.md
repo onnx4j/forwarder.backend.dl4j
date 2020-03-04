@@ -10,6 +10,9 @@
 * 符合ONNX规范的模型文件（当前最高支持v9的指令集）
 > 注意：对于操作系统与JRE的要求视Nd4j的支持而定。
 
+### 依赖
+* nd4j 1.0.0-beta6
+
 ### 快速开始
 * 导入Maven依赖包
 ```
@@ -21,8 +24,10 @@
 ```
 > 备注：由于forwarder.backend.dl4j项目还没有上传至Maven中心仓库，请开发者先自行浏览我们的github，checkout所有必须的项目。
 * 样例模型
-
+我们构建一个简易的ONNX模型作用演示使用，以下是该模型的结构图：
 ![model.onnx](https://raw.githubusercontent.com/onnx4j/onnx4j/master/docs/images/simple_model.png?raw=true "model.onnx")
+
+开发者可以点击 [这里](https://github.com/onnx4j/forwarder.demo/tree/master/src/test/resources/simple) 下载该模型。
 
 * 加载与执行ONNX模型
 ```
@@ -62,6 +67,38 @@ try (Backend<?> backend = this.model.backend(backendName)) {
     }
 }
 ```
+
+### 高性能计算支持
+项目中，在依赖org.onnx4j.backend.dl4j的基础上，通过添加额外的Nd4j依赖包，Nd4j会自动优先加载更高优先级的运行负载，以此可支持AVX2、AVX512、GPU进行更快速的运算。
+
+* Windows平台下的AVX2指令集支持
+```
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <classifier>windows-x86_64-avx2</classifier>
+</dependency>
+```
+
+* Linux平台下的AVX512指令集支持
+```
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-native</artifactId>
+    <classifier>linux-x86_64-avx512</classifier>
+</dependency>
+```
+
+* GPU支持
+Nd4j利用CUDA进行GPU计算加速，开发者需自行配置好CUDA与CuDNN，并根据CUDA的版本依赖对应的Nd4j-CUDA包。
+
+以下以CUDA 10.0与CuDNN 7.5为例：
+```
+<dependency>
+    <groupId>org.nd4j</groupId>
+    <artifactId>nd4j-cuda-10.2</artifactId>
+</dependency>
+```
  
 ## Operator支持
 ### ai.onnx Operators
@@ -100,3 +137,6 @@ try (Backend<?> backend = this.model.backend(backendName)) {
 
 ### ai.onnx.ml Operators
 暂不支持。
+ 
+## 更多
+如需要获取更详细的使用方法，可浏览我们所提供的[forwarder.demo](https://github.com/onnx4j/forwarder.demo)项目。
