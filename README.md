@@ -24,7 +24,9 @@
 ```
 > 备注：由于forwarder.backend.dl4j项目还没有上传至Maven中心仓库，请开发者先自行浏览我们的github，checkout所有必须的项目。
 * 样例模型
+
 我们构建一个简易的ONNX模型作用演示使用，以下是该模型的结构图：
+
 ![model.onnx](https://raw.githubusercontent.com/onnx4j/onnx4j/master/docs/images/simple_model.png?raw=true "model.onnx")
 
 开发者可以点击 [这里](https://github.com/onnx4j/forwarder.demo/tree/master/src/test/resources/simple) 下载该模型。
