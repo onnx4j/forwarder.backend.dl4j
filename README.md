@@ -21,7 +21,8 @@
 ```
 > 备注：由于forwarder.backend.dl4j项目还没有上传至Maven中心仓库，请开发者先自行浏览我们的github，checkout所有必须的项目。
 * 样例模型
-![model.onnx](https://note.youdao.com/yws/public/resource/e33510290e3b080c9bf6943af8f827b1/xmlnote/865AE62D9E564FD1BA4616BFC9B35339/19320)
+
+![model.onnx](https://raw.githubusercontent.com/onnx4j/onnx4j/master/docs/images/simple_model.png?raw=true "model.onnx")
 
 * 加载与执行ONNX模型
 ```
